@@ -1,5 +1,37 @@
 # icproject2
 
+Parte A
+
+Ex1_A - Implementa uma classe BitSream para ler bit de um ficheiro e/ou escrever bits para um ficheiro.
+
+Ex2_A - Implementa um programa simples para testar a classe BitStream.
+
+Ex3_A - Implementa um codificador entrópico ("lossless") usando códigos de Golomb.
+
+Ex4_A - Implementa um programa simples para testar a classe Golomb.
+
+Parte B
+
+Ex1_B - Desenvolve um codec de audio preditivo, explorando as redundâncias de canal e de freqência, usando códigos de Golomb.
+
+Ex2_B - Inclui uma opção no codificador para calcular o histográma obtido depios da predição e o valor da entropia.
+
+Ex3_B - Inclui uma opção para codificador "lossy", baseado em quantificação residual.
+
+Parte C
+
+Ex1_C - Desenvolve um codificador "lossless" baseado nos preditores lineares JPEG-LS ou 7 JPEG.
+
+EX2_C - Extender o codificador "lossless" do Ex1_C, de forma a permitir codificação "lossy".
+
+Parte D
+
+Relatório
+
+//-------------------------------------------------------------------------------------------------------//
+
+REFERÊNCIAS:
+
 Quantidade de informação, quantificação e codificação: http://intranet.deei.fct.ualg.pt/FTel/html/node7_ct.html
 
 Sistema Multimédia - Amostragem de Imagens (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo3-Amostragem%20Imagem.pdf
