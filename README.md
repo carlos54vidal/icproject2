@@ -2,7 +2,7 @@
 
 Parte A
 
-Ex1_A - Implementa uma classe BitSream para ler bit de um ficheiro e/ou escrever bits para um ficheiro.
+Ex1_A - Implementa uma classe BitStream para ler bits de um ficheiro e/ou escrever bits para um ficheiro.
 
 Ex2_A - Implementa um programa simples para testar a classe BitStream.
 
