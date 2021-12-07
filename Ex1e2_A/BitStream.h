@@ -1,3 +1,7 @@
+#ifndef BITSTREAM_H
+#define BITSTREAM_H
+
+
 #include <iostream>
 #include <fstream>
 
@@ -69,6 +73,10 @@ public:
     return bit;
     }
 
+
+
+
+
     void Write(uint8_t bit)
     {
     if (nbits >= 8){
@@ -80,9 +88,12 @@ public:
     //        cout << "teste" << "buffer= "<< wbuffer << "nbits =" << nbits << endl;
     //        cout << "tamanho do buffer= " << sizeof (wbuffer) << "bytes" << endl;
     //        cout << "tamanho do buffer= " << sizeof (int8_t) << endl;
+
+
     cout << "nbits: " << nbits << endl;
 
-    ofstream ofs(wfilename, std::ofstream::app);    // para adicionar, caso o ficheiro exista usar:  std::ofstream::app
+    ofstream ofs(wfilename, std::ofstream::app | std::ofstream::binary);    // para adicionar, caso o ficheiro exista usar:  std::ofstream::app . std::ofstream::binary para que o output seja em binário
+
 
        if (nbits==8)
             {
@@ -103,7 +114,6 @@ public:
 
 
 };
-
 
 
 
@@ -168,7 +178,7 @@ return (filename, t);
 
 
 
-
+/*
 int main (){
 
 ///bs ("novo_ficheiro.txt", "w");
@@ -194,4 +204,6 @@ int main (){
 
 //    bs.Write.ofs.close()
 return 0;
-}
+}*/
+
+#endif
