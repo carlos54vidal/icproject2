@@ -22,11 +22,13 @@ TRABALHO
 Parte A
 
 Ex1_A - Implementa uma classe BitStream para ler bits de um ficheiro e/ou escrever bits para um ficheiro.
+
   Programa: BitStream.cpp/.h
 
 Ex2_A - Implementa um programa simples para testar a classe BitStream.
 
 Ex3_A - Implementa um codificador entrópico ("lossless") usando códigos de Golomb.
+
   Programa: Golomb.cpp/.h
 
 Ex4_A - Implementa um programa simples para testar a classe Golomb.
