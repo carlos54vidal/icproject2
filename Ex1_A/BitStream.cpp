@@ -10,13 +10,13 @@ private:
     string wfilename;
     string rfilename;
 public:
-/*---------------Variaveis de Read-------------------*/
+/*---------------Atributos de Read-------------------*/
 //    string rfilename;
     uint8_t rcomp = 0x80;  // 10000000
     char rbuffer;
     uint8_t bit;
     uint8_t firstBit = rbuffer & rcomp; // Extract the first bit of x
-/*---------------Variaveis de Write------------------*/
+/*---------------Atributos de Write------------------*/
 //    string wfilename;
     uint8_t wbuffer;
     //    uint8_t* pbuffer = &buffer;
