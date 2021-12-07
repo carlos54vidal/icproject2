@@ -3,12 +3,15 @@
 Estrutura do Projecto:
 
 Raiz (executáveis, ficheiros de dados, relatório final e "readme")
+
                      |
                      |
                      |_______ Sources (ficheiros de código)
+                     
                      |           |
                      |           |
                      |           |_______ Dependencies (librarias "externas")
+                     
                      |
                      |
                      |_______ Documentação (Doxygen, referêencias bibliográficas, etc)
