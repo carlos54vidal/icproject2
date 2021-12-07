@@ -1,5 +1,21 @@
 # icproject2
 
+Estrutura do Projecto:
+
+Raiz (executáveis, ficheiros de dados, relatório final e "readme")
+                     |
+                     |
+                     |_______ Sources (ficheiros de código)
+                     |
+                     |
+                     |_______ Dependencies (librarias "externas")
+                     |
+                     |
+                     |_______ Documentação (Doxygen, referêencias bibliográficas, etc)
+
+
+TRABALHO
+
 Parte A
 
 Ex1_A - Implementa uma classe BitStream para ler bits de um ficheiro e/ou escrever bits para um ficheiro.
