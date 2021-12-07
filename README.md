@@ -34,7 +34,7 @@ TRABALHO
 
 ##### Parte B
 
-- [ ] Ex1_B - Desenvolve um codec de audio preditivo, explorando as redundâncias de canal e de freqência, usando códigos de Golomb.
+- [ ] Ex1_B - Desenvolve um codec de audio preditivo, explorando as redundâncias de canal e de frequência, usando códigos de Golomb.
 
 - [ ] Ex2_B - Inclui uma opção no codificador para calcular o histográma obtido depios da predição e o valor da entropia.
 
