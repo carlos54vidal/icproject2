@@ -18,9 +18,11 @@
 
 TRABALHO
 
-##### Parte A
+##### Parte A [^2] [^3] [^4] [^5] [^6]
 
 - [ ] Ex1_A - Implementa uma classe BitStream para ler bits de um ficheiro e/ou escrever bits para um ficheiro.
+
+Na leitura do ficheiro binário utilizamos o metodo *file.read (memblock, size)* do ifstream [^1]:.
 
     Programa: BitStream.cpp/.h
 
@@ -54,13 +56,15 @@ TRABALHO
 
 REFERÊNCIAS:
 
-Quantidade de informação, quantificação e codificação: http://intranet.deei.fct.ualg.pt/FTel/html/node7_ct.html
+[^2]: Quantidade de informação, quantificação e codificação: http://intranet.deei.fct.ualg.pt/FTel/html/node7_ct.html
 
-Sistema Multimédia - Amostragem de Imagens (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo3-Amostragem%20Imagem.pdf
+[^3]: Sistema Multimédia - Amostragem de Imagens (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo3-Amostragem%20Imagem.pdf
 
-Sistemas Multimédia - Codificação  (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo5-Codifica%C3%A7%C3%A3o.pdf
+[^4]: Sistemas Multimédia - Codificação  (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo5-Codifica%C3%A7%C3%A3o.pdf
 
-Bit Manipulation: http://www.goldsborough.me/bits/c++/low-level/problems/2015/10/11/23-52-02-bit_manipulation/
+[^5]: Bit Manipulation: http://www.goldsborough.me/bits/c++/low-level/problems/2015/10/11/23-52-02-bit_manipulation/
 
-Bit Operations: http://www2.lawrence.edu/fast/GREGGJ/CMSC270/bitOperations.html
+[^6]: Bit Operations: http://www2.lawrence.edu/fast/GREGGJ/CMSC270/bitOperations.html
                 https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit
+
+[^1]: File Streams em C++ com ficheiros binários: https://www.cplusplus.com/doc/tutorial/files/   (ir à seção "Binary files")
