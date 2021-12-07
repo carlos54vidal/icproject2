@@ -2,7 +2,7 @@
 
 Estrutura do Projecto:
 
-//
+*
 Raiz (executáveis, ficheiros de dados, relatório final e "readme")
 
                      |
@@ -17,7 +17,7 @@ Raiz (executáveis, ficheiros de dados, relatório final e "readme")
                      |
                      |_______ Documentação (Doxygen, referêencias bibliográficas, etc)
 
-//
+*
 TRABALHO
 
 Parte A
