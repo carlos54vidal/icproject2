@@ -1,56 +1,54 @@
 # icproject2
 
-Estrutura do Projecto:
+#### Estrutura do Projecto:
 
-*
-Raiz (executáveis, ficheiros de dados, relatório final e "readme")
 
+          
+                   Raiz (executáveis, ficheiros de dados, relatório final e "readme")
                      |
                      |
-                     |_______ Sources (ficheiros de código)
-                     
+                     |_______ Sources (ficheiros de código)                     
                      |           |
                      |           |
-                     |           |_______ Dependencies (librarias "externas")
-                     
+                     |           |_______ Dependencies (librarias "externas")                     
                      |
                      |
                      |_______ Documentação (Doxygen, referêencias bibliográficas, etc)
 
-*
+
 TRABALHO
 
-Parte A
+##### Parte A
 
-Ex1_A - Implementa uma classe BitStream para ler bits de um ficheiro e/ou escrever bits para um ficheiro.
+- [ ] Ex1_A - Implementa uma classe BitStream para ler bits de um ficheiro e/ou escrever bits para um ficheiro.
 
-  Programa: BitStream.cpp/.h
+    Programa: BitStream.cpp/.h
 
-Ex2_A - Implementa um programa simples para testar a classe BitStream.
+- [ ] Ex2_A - Implementa um programa simples para testar a classe BitStream.
 
-Ex3_A - Implementa um codificador entrópico ("lossless") usando códigos de Golomb.
+- [ ] Ex3_A - Implementa um codificador entrópico ("lossless") usando códigos de Golomb.
 
-  Programa: Golomb.cpp/.h
+    Programa: Golomb.cpp/.h
 
-Ex4_A - Implementa um programa simples para testar a classe Golomb.
+- [ ] Ex4_A - Implementa um programa simples para testar a classe Golomb.
 
-Parte B
+##### Parte B
 
-Ex1_B - Desenvolve um codec de audio preditivo, explorando as redundâncias de canal e de freqência, usando códigos de Golomb.
+- [ ] Ex1_B - Desenvolve um codec de audio preditivo, explorando as redundâncias de canal e de freqência, usando códigos de Golomb.
 
-Ex2_B - Inclui uma opção no codificador para calcular o histográma obtido depios da predição e o valor da entropia.
+- [ ] Ex2_B - Inclui uma opção no codificador para calcular o histográma obtido depios da predição e o valor da entropia.
 
-Ex3_B - Inclui uma opção para codificador "lossy", baseado em quantificação residual.
+- [ ] Ex3_B - Inclui uma opção para codificador "lossy", baseado em quantificação residual.
 
-Parte C
+##### Parte C
 
-Ex1_C - Desenvolve um codificador "lossless" baseado nos preditores lineares JPEG-LS ou 7 JPEG.
+- [ ] Ex1_C - Desenvolve um codificador "lossless" baseado nos preditores lineares JPEG-LS ou 7 JPEG.
 
-EX2_C - Extender o codificador "lossless" do Ex1_C, de forma a permitir codificação "lossy".
+- [ ] EX2_C - Extender o codificador "lossless" do Ex1_C, de forma a permitir codificação "lossy".
 
-Parte D
+##### Parte D
 
-Relatório
+- [ ] Relatório
 
 //-------------------------------------------------------------------------------------------------------//
 
