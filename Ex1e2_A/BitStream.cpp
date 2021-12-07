@@ -44,12 +44,14 @@ public:
     uint8_t Read() /// Read the characters of a text file byte to byte
     {
 
-    ifstream ifs (rfilename);
+/*------Implementação txt-------*/
 
+    ifstream ifs (rfilename, std::ofstream::binary);
+    while (ifs.get(rbuffer))
 
-    sizeof (rbuffer);
+/*------------------------------*/
 
-    while (ifs.get(rbuffer)) {
+ {
         sizeof (rbuffer);
         int nbits = 8;
         int n = 0;
@@ -70,6 +72,8 @@ public:
         nbits = 8;
         }
     }
+
+
     return bit;
     }
 
