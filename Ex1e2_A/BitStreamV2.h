@@ -16,78 +16,83 @@ private:
     string rfilename;
     long count_tbits=0;//contador do total de bits
     int nbits=8;
+    char wbuffer=0;
+    char rbuffer;
 
 public:
-/*---------------Atributos de Read-------------------*/
-//    string rfilename;
+
     long total_nbits;
     uint8_t rcomp = 0x80;  // 10000000
-    char rbuffer;
     uint8_t bit;
     uint8_t firstBit = rbuffer & rcomp; // Extract the first bit of x
-/*---------------Atributos de Write------------------*/
-//    string wfilename;
-    char wbuffer=0;
-    //    uint8_t* pbuffer = &buffer;
-        int bytes = 1;
-        int nbytes;
-    //    uint8_t bit = 1;
-    //    uint8_t wcomp = 0xFF;
+    int bytes = 1;
+    int nbytes;
+
 /*------------ Parameterized Constructors-------------*/
     BitStream (string filename, char* x)
     {
+
         if (x == "w"){
             wfilename=filename;
         }
         if (x == "r"){
             rfilename=filename;
         }
-
     }
 
+/*______________________________________________________________
+_______________________ Methods_________________________________
 
-/*---------------------------------------------------*/
+Read_file (char wb): para abrir o ficheiro e retirar a stream;
+Read(): para ler a stream bit a bit;
+Write_file (char wb): para criar o ficheiro e gravar o byte;
+Write(uint8_t bit): para juntar o byte bit a bit._____________*/
 
-    void Read() /// Read the characters of a text file byte to byte
-    {
+    void Read_file (){
 
         ifstream ifs;
         ifs.open(rfilename, std::ifstream::app | std::ifstream::binary | std::ifstream::in | std::ifstream::ate);
-
-    while(total_nbits=0 || count_tbits<=total_nbits){
-
         ifs.get(rbuffer);
+        Read (rbuffer);
+        }
+
+    void Read(char rb)
+        {
         int nbits = 8;
         int n = 0;
 
         for(int i = 8; i > 0; i--){
 
-            bit = (rbuffer << n) & 0x80; //0x80=10000000 (binário). bit= o bit mais significativo 1º n=0, depois faz o shift
+            bit = (rb << n) & rcomp; //0x80=10000000 (binário). bit= o bit mais significativo 1º n=0, depois faz o shift
             n=1;
 
     ///fazer aqui qualquer coisa com o bit, tipo: comparar, etc
 
-
         nbits--; /// contador do bit que está a ser lido no byte
         }
 
-    if(nbits = 1){
-
+ //   if(nbits = 1){
     ///    fazer aqui qualquer coisa com o byte
-
-        nbits = 8;
-        }
-
-    }
+ //       nbits = 8;
+ //       }
     }
 
+    void Write_file (char wb){
+
+       ofstream ofs(wfilename, std::ofstream::app | std::ofstream::binary);    // para adicionar, caso o ficheiro exista usar:  std::ofstream::app . std::ofstream::binary para que o output seja em binário
+    //    ofs.open;
+            ofs.write(&wb, 1);
+            ofs.flush();
+    //      wbuffer = 0x00;
+            nbytes++;
+            cout << "Caracter : " << wb << endl;
+            wbuffer=0x00;
+            ofs.close();
+    }
 
     void Write(uint8_t bit)
     {
     long total_nbits;
-    ofstream ofs(wfilename, std::ofstream::app | std::ofstream::binary);    // para adicionar, caso o ficheiro exista usar:  std::ofstream::app . std::ofstream::binary para que o output seja em binário
-//    ofs.open;
-
 //    while (count_tbits<=total_nbits){
         if (nbits < 9){            //reset do contador dos bits no buffer para saber quando o buffer está cheio e que deve escrever para o fichreiro
             bit = (bit << nbits-1);
@@ -102,22 +107,15 @@ public:
             }
         cout << "nbits: " << nbits << endl;
 
-
         if (nbits==0/* || count_tbits==total_nbits*/)
             {
             nbits=8;
-//          ofs << wbuffer;
-            ofs.write(&wbuffer, 1);
-            ofs.flush();
-    //      wbuffer = 0x00;
-            nbytes++;
-            cout << "Caracter : " << wbuffer << endl;
-            wbuffer=0x00;
+            Write_file (wbuffer);
             cout << "total bits: " << total_nbits << endl;
             };
 
 //    }
-      ofs.close();
+
 
 
     }
