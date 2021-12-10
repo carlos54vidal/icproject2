@@ -4,10 +4,10 @@
 
 #include <iostream>
 #include <fstream>
-
+//#include <filesystem>
 
 using namespace std;
-
+//using namespace std::filesystem;
 
 class BitStream //(const stream "filename", char x)
 {
@@ -20,7 +20,8 @@ private:
     char rbuffer;
 
 public:
-
+    fstream ifs;
+    fstream ofs;
     long total_nbits;
     uint8_t rcomp = 0x80;  // 10000000
     uint8_t bit;
@@ -28,11 +29,14 @@ public:
     int bytes = 1;
     int nbytes;
 
+
 /*------------ Parameterized Constructors-------------*/
     BitStream (string filename, char* x)
     {
 
         if (x == "w"){
+//        fs::path p = filename, e = ".bin";
+//        filename = p.replace_extention(e);
             wfilename=filename;
         }
         if (x == "r"){
@@ -45,13 +49,14 @@ _______________________ Methods_________________________________
 
 Read_file (char wb): para abrir o ficheiro e retirar a stream;
 Read(): para ler a stream bit a bit;
+Read_tbits(): para ler a stream bit a bit,  até ao limite de "tbits";
 Write_file (char wb): para criar o ficheiro e gravar o byte;
-Write(uint8_t bit): para juntar o byte bit a bit._____________*/
+Write(uint8_t bit): para juntar o byte bit a bit;
+Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "tbits"__*/
 
     void Read_file (){
 
-        ifstream ifs;
-        ifs.open(rfilename, std::ifstream::app | std::ifstream::binary | std::ifstream::in | std::ifstream::ate);
+        ifs.open(rfilename, std::fstream::app | std::fstream::binary | std::fstream::in | std::fstream::ate);
         ifs.get(rbuffer);
         Read (rbuffer);
         }
@@ -79,8 +84,8 @@ Write(uint8_t bit): para juntar o byte bit a bit._____________*/
 
     void Write_file (char wb){
 
-       ofstream ofs(wfilename, std::ofstream::app | std::ofstream::binary);    // para adicionar, caso o ficheiro exista usar:  std::ofstream::app . std::ofstream::binary para que o output seja em binário
-    //    ofs.open;
+        ofs.open(wfilename, std::fstream::app | std::fstream::binary);    // para adicionar, caso o ficheiro exista usar:  std::ofstream::app . std::ofstream::binary para que o output seja em binário
+    //    ;
             ofs.write(&wb, 1);
             ofs.flush();
     //      wbuffer = 0x00;
@@ -92,8 +97,7 @@ Write(uint8_t bit): para juntar o byte bit a bit._____________*/
 
     void Write(uint8_t bit)
     {
-    long total_nbits;
-//    while (count_tbits<=total_nbits){
+
         if (nbits < 9){            //reset do contador dos bits no buffer para saber quando o buffer está cheio e que deve escrever para o fichreiro
             bit = (bit << nbits-1);
             wbuffer = (wbuffer | bit );  ///shifts 1 possição e set the last bit of the buffer to bit
@@ -107,16 +111,37 @@ Write(uint8_t bit): para juntar o byte bit a bit._____________*/
             }
         cout << "nbits: " << nbits << endl;
 
-        if (nbits==0/* || count_tbits==total_nbits*/)
+        if (nbits==0)
             {
             nbits=8;
             Write_file (wbuffer);
             cout << "total bits: " << total_nbits << endl;
-            };
+            }
+    }
 
-//    }
+        void Write_tbits(uint8_t bit, int tbits)
+    {
+    for(int i=0; i<tbits; i++){
+        if (nbits < 9){           //reset do contador dos bits no buffer para saber quando o buffer está cheio e que deve escrever para o fichreiro
+            bit = (bit << nbits-1);
+            wbuffer = (wbuffer | bit );  ///shifts 1 possição e set the last bit of the buffer to bit
+            nbits--;
+            count_tbits++;
+    //
+            cout << "teste " << "buffer= "<< wbuffer << " nbits =" << nbits << endl;
+    //        cout << "tamanho do buffer= " << sizeof (wbuffer) << "bytes" << endl;
+    //        cout << "tamanho do buffer= " << sizeof (int8_t) << endl;
 
+            }
+        cout << "nbits: " << nbits << endl;
 
+        if (nbits==0)
+            {
+            nbits=8;
+            Write_file (wbuffer);
+            cout << "total bits: " << total_nbits << endl;
+            }
+    }
 
     }
 
@@ -143,6 +168,7 @@ return (filename, t);
 };
 
 */
+
 
 
 

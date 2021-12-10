@@ -67,7 +67,7 @@ BitStream tb ("teste", "w");
     bs.Write (1);
 
 //    bs.Write.ofs.close()
-
+    bs.ofs.close();
 
     }
 
