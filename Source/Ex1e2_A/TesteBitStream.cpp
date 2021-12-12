@@ -6,6 +6,7 @@
 #include "BitStreamV2.h"
 
 
+
 int main (int argc, char* argv[])
 {
 ///  argv[1]=Ajuda (/?), ou caminho e nome do ficheiro original
@@ -14,7 +15,6 @@ int main (int argc, char* argv[])
 ///  argv[4]=indicação da flag -b, para indicar o n.º de bits a ler e escrever
 ///  argv[5]=valor de [-b size], para indicar o n.º de bits a ler e escrever
 
-BitStream tb ("teste", "w");
 
         if (argc<=2 || argv[1]=="/?")	{	// indicação da sintaxe de commando
 		cout << "Usage: ./program_name ./original_file_name.wav ./copy_file_name.wav -r or -w [-b size] \n\n options:\n\t -b size\t Number of bits to read or write (all if not specified).\n" << endl; // \a toca um som de alerta (byte 0x07 in ASCII encoding)
@@ -32,8 +32,7 @@ BitStream tb ("teste", "w");
     if (argc==6){
 
         long numbits=atoi(argv[5]);
-        tb.Read_file();
-        tb.total_nbits=ceil(numbits);
+
         cout << "argc=6" << endl;
         cout << numbits << endl;
 
@@ -42,32 +41,36 @@ BitStream tb ("teste", "w");
 
     else {
 
-
-
     if (argc==4){
 
+//    BitStream bs("teste.txt", "c");
 
-    BitStream bs("teste.txt", "w");
+    BitStream bs("teste.txt", "c", 3);
 
-    bs.Write (0);
-    bs.Write (0);
-    bs.Write (1);
-    bs.Write (0);
-    bs.Write (0);
-    bs.Write (0);
-    bs.Write (1);
-    bs.Write (1);
-    bs.Write (0);
-    bs.Write (0);
-    bs.Write (1);
-    bs.Write (0);
-    bs.Write (0);
-    bs.Write (0);
-    bs.Write (1);
-    bs.Write (1);
+//        bs.Read_file();
 
-//    bs.Write.ofs.close()
-    bs.ofs.close();
+//    bs.settotal_nbits(2);
+
+/*
+    bs.Write_tbits (0);
+    bs.Write_tbits (0);
+    bs.Write_tbits (1);
+    bs.Write_tbits (0);
+    bs.Write_tbits (0);
+    bs.Write_tbits (0);
+    bs.Write_tbits (1);
+    bs.Write_tbits (1);
+    bs.Write_tbits (0);
+    bs.Write_tbits (0);
+    bs.Write_tbits (1);
+    bs.Write_tbits (0);
+    bs.Write_tbits (0);
+    bs.Write_tbits (0);
+    bs.Write_tbits (1);
+    bs.Write_tbits (1);
+*/
+
+//    bs.ofs.close();
 
     }
 
