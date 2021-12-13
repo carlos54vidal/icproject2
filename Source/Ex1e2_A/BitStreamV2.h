@@ -122,7 +122,7 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
 
         ofs.open(wfilename, std::fstream::app | std::fstream::binary);    // para adicionar, caso o ficheiro exista usar:  std::ofstream::app . std::ofstream::binary para que o output seja em binário
             ofs.write(&wb, 1);
-            ofs.flush();
+//            ofs.flush();
             ofs.close();
     }
 ///
