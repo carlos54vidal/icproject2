@@ -15,7 +15,6 @@ private:
     string rfilename;
     std::string wfilename;
     char wbuffer=0;
-    char rbuffer;
     float tnbytes=0;
     char buffer_size=8;
     int nbits;
@@ -25,6 +24,7 @@ public:
     fstream ofs;
     uint8_t bit;
     float total_nbits=0;
+    char rbuffer;
 
 
 /*------------ Parameterized Constructors-------------*/
@@ -75,7 +75,7 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
         ifs.seekg (0, ios::beg);
 
         while (ifs.get(rbuffer)){
-             Read (rbuffer);
+ //            Read (rbuffer);
         }
     ofs.close();
     }
