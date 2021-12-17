@@ -19,11 +19,11 @@
 
 TRABALHO
 
-##### Parte A [^2] [^3] [^4] [^5] [^6]
+##### Parte A [^1] [^2] [^3] [^5] [^6]
 
 - [ ] Ex1_A - Implementa uma classe BitStream para ler bits de um ficheiro e/ou escrever bits para um ficheiro.
 
-Na leitura do ficheiro binário utilizamos o metodo *file.read (memblock, size)* do ifstream [^1]:.
+Na leitura do ficheiro binário utilizamos o metodo *file.read (memblock, size)* do ifstream [^7]:.
 
     Programa: BitStream.cpp/.h
 
@@ -35,7 +35,7 @@ Na leitura do ficheiro binário utilizamos o metodo *file.read (memblock, size)*
 
 - [ ] Ex4_A - Implementa um programa simples para testar a classe Golomb.
 
-##### Parte B
+##### Parte B [^4]
 
 - [ ] Ex1_B - Desenvolve um codec de audio preditivo, explorando as redundâncias de canal e de frequência, usando códigos de Golomb.
 
