@@ -57,23 +57,24 @@ Na leitura do ficheiro binário utilizamos o metodo *file.read (memblock, size)*
 
 REFERÊNCIAS:
 
-[^2]: Quantidade de informação, quantificação e codificação: http://intranet.deei.fct.ualg.pt/FTel/html/node7_ct.html
 
-[^3]: Sistema Multimédia - Amostragem de Imagens (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo3-Amostragem%20Imagem.pdf
+[^1]: Quantidade de informação, quantificação e codificação: http://intranet.deei.fct.ualg.pt/FTel/html/node7_ct.html
 
-[^4]: Sistemas Multimédia - Codificação  (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo5-Codifica%C3%A7%C3%A3o.pdf
+[^2]: Sistema Multimédia - Amostragem de Imagens (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo3-Amostragem%20Imagem.pdf
 
-[^5]: LOSSLESS AUDIO DATA COMPRESSION, by Kan Zhao, 2007: https://scholar.acadiau.ca/islandora/object/theses:126/datastream/PDF/file.pdf
+[^3]: Sistemas Multimédia - Codificação  (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo5-Codifica%C3%A7%C3%A3o.pdf
 
-[^6]: Bit Manipulation: http://www.goldsborough.me/bits/c++/low-level/problems/2015/10/11/23-52-02-bit_manipulation/
+[^4]: LOSSLESS AUDIO DATA COMPRESSION, by Kan Zhao, 2007: https://scholar.acadiau.ca/islandora/object/theses:126/datastream/PDF/file.pdf
 
-[^7]: Bit Operations:
+[^5]: Bit Manipulation: http://www.goldsborough.me/bits/c++/low-level/problems/2015/10/11/23-52-02-bit_manipulation/
+
+[^6]: Bit Operations:
 
           http://www2.lawrence.edu/fast/GREGGJ/CMSC270/bitOperations.html
           https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit
           
 
-[^1]: File Streams em C++ com ficheiros binários:
+[^7]: File Streams em C++ com ficheiros binários:
 
           https://www.cplusplus.com/doc/tutorial/files/   (ir à seção "Binary files")
           https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/cppBinaryFileIO-2.html
