@@ -76,7 +76,6 @@ REFERÊNCIAS:
           https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/cppBinaryFileIO-2.html
           https://courses.cs.vt.edu/cs2604/fall02/binio.html
 
-
 [^7]: LOSSLESS AUDIO DATA COMPRESSION, by Kan Zhao, 2007: https://scholar.acadiau.ca/islandora/object/theses:126/datastream/PDF/file.pdf
 
 
