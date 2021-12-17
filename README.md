@@ -71,7 +71,7 @@ REFERÊNCIAS:
 
           http://www2.lawrence.edu/fast/GREGGJ/CMSC270/bitOperations.html
           https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit
-
+          
 [^1]: File Streams em C++ com ficheiros binários:
 
           https://www.cplusplus.com/doc/tutorial/files/   (ir à seção "Binary files")
