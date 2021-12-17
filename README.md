@@ -63,6 +63,8 @@ REFERÊNCIAS:
 
 [^4]: Sistemas Multimédia - Codificação  (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo5-Codifica%C3%A7%C3%A3o.pdf
 
+[^7]: LOSSLESS AUDIO DATA COMPRESSION, by Kan Zhao, 2007: https://scholar.acadiau.ca/islandora/object/theses:126/datastream/PDF/file.pdf
+
 [^5]: Bit Manipulation: http://www.goldsborough.me/bits/c++/low-level/problems/2015/10/11/23-52-02-bit_manipulation/
 
 [^6]: Bit Operations:
@@ -76,6 +78,5 @@ REFERÊNCIAS:
           https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/cppBinaryFileIO-2.html
           https://courses.cs.vt.edu/cs2604/fall02/binio.html
 
-[^7]: LOSSLESS AUDIO DATA COMPRESSION, by Kan Zhao, 2007: https://scholar.acadiau.ca/islandora/object/theses:126/datastream/PDF/file.pdf
 
 
