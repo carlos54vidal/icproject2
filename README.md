@@ -63,11 +63,11 @@ REFERÊNCIAS:
 
 [^4]: Sistemas Multimédia - Codificação  (slides): http://sweet.ua.pt/jnvieira/sm/docs/Aulas/Modulo5-Codifica%C3%A7%C3%A3o.pdf
 
-[^7]: LOSSLESS AUDIO DATA COMPRESSION, by Kan Zhao, 2007: https://scholar.acadiau.ca/islandora/object/theses:126/datastream/PDF/file.pdf
+[^5]: LOSSLESS AUDIO DATA COMPRESSION, by Kan Zhao, 2007: https://scholar.acadiau.ca/islandora/object/theses:126/datastream/PDF/file.pdf
 
-[^5]: Bit Manipulation: http://www.goldsborough.me/bits/c++/low-level/problems/2015/10/11/23-52-02-bit_manipulation/
+[^6]: Bit Manipulation: http://www.goldsborough.me/bits/c++/low-level/problems/2015/10/11/23-52-02-bit_manipulation/
 
-[^6]: Bit Operations:
+[^7]: Bit Operations:
 
           http://www2.lawrence.edu/fast/GREGGJ/CMSC270/bitOperations.html
           https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit
@@ -77,6 +77,4 @@ REFERÊNCIAS:
           https://www.cplusplus.com/doc/tutorial/files/   (ir à seção "Binary files")
           https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/cppBinaryFileIO-2.html
           https://courses.cs.vt.edu/cs2604/fall02/binio.html
-
-
 
