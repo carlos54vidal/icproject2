@@ -35,7 +35,7 @@ Na leitura do ficheiro binário utilizamos o metodo *file.read (memblock, size)*
 
 - [ ] Ex4_A - Implementa um programa simples para testar a classe Golomb.
 
-##### Parte B [^4]
+##### Parte B [^4][^8]: 
 
 - [ ] Ex1_B - Desenvolve um codec de audio preditivo, explorando as redundâncias de canal e de frequência, usando códigos de Golomb.
 
@@ -80,4 +80,4 @@ REFERÊNCIAS:
           https://www.eecs.umich.edu/courses/eecs380/HANDOUTS/cppBinaryFileIO-2.html
           https://courses.cs.vt.edu/cs2604/fall02/binio.html
 
-
+[^8]: FLAC: https://xiph.org/flac/format.html
