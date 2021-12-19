@@ -50,7 +50,7 @@ This constructor is also going to set the extension of the coded file, whether i
 of the inputed file name (and path), changing only the extension to ".bin".
  **/
     BitStream (string filename, const char* x, int y){
-        
+
         rbuffer_type rbuffer = 0;
         total_nbits = y;
 
@@ -73,7 +73,7 @@ of the inputed file name (and path), changing only the extension to ".bin".
             wfilename = p2.string();
             cout << "Out = " << wfilename << endl;
         }
-               
+
         if (file_extension == ".txt") {
             using rbuffer_type = char;
         }
@@ -83,7 +83,7 @@ of the inputed file name (and path), changing only the extension to ".bin".
         if (file_extension == ".png") {
             using rbuffer_type = uint8_t;
         }
-           
+
 
 //        if (y != 0) {
 //            Read_file_tbits (file_extension);
@@ -128,7 +128,7 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
                 cout << "the file can't be found " << ifs.rdstate() << endl;
             }
 
-        }            
+        }
             cout << "filesize 117 " <<  ifs.tellg() << endl;
             cout << "In = " <<  rfilename << endl;
 
@@ -156,22 +156,22 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
                     return rbuffer;
                 }
             }
-    
+
     }
 
- /// Method for reading a file sample by sample, character or text, with bit limits.
+ /// Methods for reading a file sample by sample, character or text, with bit limits.
 
     char Read_Text_file_tbits (){
 
         tnbytes = ceil(total_nbits/buffer_size);
-        
-            ifs.open(rfilename, std::fstream::app | std::fstream::binary | std::fstream::in | std::fstream::ate);
+
+            ifs.open(rfilename, std::fstream::app | std::fstream::binary | std::fstream::in);
             if (ifs.fail()){
             cout << "the file "<< rfilename << " can't be found 158 " << ifs.rdstate() << endl;
             }
             cout << "Filesize 160 = " <<  ifs.tellg() << " Bytes -> " << tnbytes << " Byte(s)" << "(" << total_nbits << " bit(s))" << endl;
             cout << "In = " <<  rfilename << endl;
-            ifs.seekg (0, ios::beg);
+//            ifs.seekg (0, ios::beg);
             char rbuffer{};
             for (long i = 1;  i <= tnbytes; i++){
                 ifs.get(rbuffer);
@@ -180,7 +180,7 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
                 return rbuffer;
             }
 
-            
+
             ofs.close();
         }
 
@@ -203,7 +203,7 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
                 tnbytes--;
             }
         }
- 
+
 
 /** Method for extraction of each bit from the buffer. The buffer size should correspond to the sample, character or pixel size.
 It starts reading from the least significant bit towards the most significant bit. It also works for either Read_file methods.**/
@@ -325,7 +325,7 @@ operations on C++ is "8bits" so, when the user establish a smaller number of bit
                 }
                 if (file_extension == ".png") {
                     Write_Image_file(wbuffer);
-                }                   
+                }
             }
         }
 
