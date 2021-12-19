@@ -4,12 +4,12 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "Dependencies/opencv/build/include/opencv2/opencv.hpp"
-#include "AudioFile/AudioFile.h"
+#include "Dependencies/opencv2/opencv.hpp"
+#include "Dependencies/AudioFile/AudioFile.h"
 #include <filesystem> /** It needs a compiler that supports the C++17 language standard, which is implemented e.g. on the g++ compiler from the version 8 onwards,
                         but it´s recommended a g++ version release 9 or newer for full support. https://gcc.gnu.org/gcc-9/changes.html#cxx **/
 
-using namespace cv;
+//using namespace cv;
 using namespace std;
 using namespace std::filesystem;/** It needs a compiler that supports the C++17 language standard, which is implemented e.g. on the g++ compiler from the version 8 onwards,
                                 but it´s recommended the g++ version release 9 or newer for full support. https://gcc.gnu.org/gcc-9/changes.html#cxx **/
@@ -18,8 +18,7 @@ class BitStream
 {
 private:
     string rfilename;/// the name of the input file.
-    std::string wfilename; /// the name of the output file.
-    float tnbytes=0;///corresponds to the total number of Bytes to be read, on the case of an intended limit for the number of bits.
+    long tnbytes=0;///corresponds to the total number of Bytes to be read, on the case of an intended limit for the number of bits.
     char buffer_size=8;/// the default buffer size. Specially used to construct the wbuffer attribute (which is the "buffer" to be written to the file)
     int nbits;///attribute used to count the bit, or number of bits that are being processed.
 
@@ -27,9 +26,9 @@ public:
     fstream ifs; ///the object name for the input stream.
     fstream ofs; /// the object name for the output stream.
     int bit; /// bit attribute
-    float total_nbits=0; /// the limited number of bits to be treated. (value to be imputed/adquired from the user)
-    uint8_t* rbuffer;/// the "buffer" read from the file for coding or decoding.
-    uint8_t* wbuffer=0;/// the produced "buffer" to be written to the file (whether it is coded or decoded data).
+    int total_nbits=0; /// the limited number of bits to be treated. (value to be imputed/adquired from the user)
+    uint8_t rbuffer;/// the "buffer" read from the file for coding or decoding.
+    uint8_t wbuffer=0;/// the produced "buffer" to be written to the file (whether it is coded or decoded data).
     std::string wfilename; /// the name of the output file.
     string file_extension;/// is required, to now how to handle the data extraction.
 
@@ -47,10 +46,10 @@ public:
 This constructor is also going to set the extension of the coded file, whether it is for the reading method or the writing method, base on the name
 of the inputed file name (and path), changing only the extension to ".bin".
  **/
-    BitStream (string filename, char* x, long y)
+    BitStream (string filename, const char* x, int y)
     {
         total_nbits = y;
-        if (x == "d"){
+        if (x == "d") {
             wfilename = filename;
             std::filesystem::path p1 = filename, e = "bin";
             file_extension = std::filesystem::path(p1).extension().string();
@@ -71,10 +70,10 @@ of the inputed file name (and path), changing only the extension to ".bin".
         }
 
 
-        if (total_nbits!=0){
-            Read_file_tbits ();
+        if (y != 0) {
+            Read_file_tbits (file_extension);
         } else {
-            Read_file();
+            Read_file(file_extension);
         }
     }
 
@@ -90,13 +89,14 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
 
 
 /// Method for reading a file sample by sample, character or text, with no limits.
-    void Read_file ()
+    void Read_file (string file_extension)
     {
         if (file_extension==".wav"){
             AudioFile<double> audioFile;
 
             audioFile.load(rfilename);
-            double rbuffer = static_cast<double>(rbuffer);
+            double rbuffer{};
+            rbuffer = static_cast<double>(rbuffer);
             int channels = audioFile.getNumChannels();
             int numSamples = audioFile.getNumSamplesPerChannel();
 
@@ -109,11 +109,16 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
 
         if (file_extension==".txt"){
 
-            ifs.open(rfilename, std::fstream::app | std::fstream::binary | std::fstream::in | std::fstream::ate);
-            cout << "filesize " <<  ifs.tellg() << endl;
+            ifs.open(rfilename, std::istream::app | std::istream::binary | std::istream::in | std::istream::ate);
+            if (ifs.fail()){
+            cout << "the file can't be found " << ifs.rdstate() << endl;
+            }
+
+            cout << "filesize 117 " <<  ifs.tellg() << endl;
             cout << "In = " <<  rfilename << endl;
             ifs.seekg (0, ios::beg);
-            char rbuffer = static_cast<char>(rbuffer);
+            char rbuffer{};
+            rbuffer = static_cast<char>(rbuffer);
             while (ifs.get(rbuffer)){
  //            Read (rbuffer); // it was used to "chain" the methods together, to copy the bits to a new file with no treatment.
                 }
@@ -121,19 +126,19 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
         }
 
         if (file_extension==".png"){
-            Mat img = imread(rfilename);
+            cv::Mat img = cv::imread(rfilename);
 
             if (img.empty()){
                 cout << "Error : Image cannot be loaded..!!" << endl;
             }
         uint8_t* pixelPtr = (uint8_t*)img.data;
-        uint8_t rbuffer = static_cast<uint8_t>(rbuffer);
+        rbuffer = static_cast<uint8_t>(rbuffer);
 
         int cn = img.channels(); //gives us the colour channels (which colours they are)
 
             for (int r = 0; r < img.rows; r++){
                 for (int c = 0; c < img.cols; c++){
-                   img.at<Vec3b>(r,c);
+                   img.at<cv::Vec3b>(r,c);
                 }
             }
         }
@@ -141,14 +146,18 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
     }
 
  /// Method for reading a file sample by sample, character or text, with bit limits.
-    void Read_file_tbits ()
+    void Read_file_tbits (string file_extension)
     {
         tnbytes = ceil(total_nbits/buffer_size);
-        char rbuffer = static_cast<char>(rbuffer);
+        char rbuffer{};
+        rbuffer = static_cast<char>(rbuffer);
 
         if (file_extension==".txt"){
             ifs.open(rfilename, std::fstream::app | std::fstream::binary | std::fstream::in | std::fstream::ate);
-            cout << "Filesize = " <<  ifs.tellg() << " Bytes -> " << tnbytes << " Byte(s)" << "(" << total_nbits << " bit(s))" << endl;
+            if (ifs.fail()){
+            cout << "the file "<< rfilename << " can't be found 158 " << ifs.rdstate() << endl;
+            }
+            cout << "Filesize 160 = " <<  ifs.tellg() << " Bytes -> " << tnbytes << " Byte(s)" << "(" << total_nbits << " bit(s))" << endl;
             cout << "In = " <<  rfilename << endl;
             ifs.seekg (0, ios::beg);
 
@@ -202,10 +211,13 @@ It starts reading from the least significant bit towards the most significant bi
      }
 
 /// Method for writing the produced buffer to the new file with no limit number of bits parameter.
-    void Write_file (char wb){
+    void Write_file (char wb, string file_extension){
         if (file_extension==".txt"){
             ofs.open(wfilename, std::fstream::app | std::fstream::binary);    // para adicionar, caso o ficheiro exista usar:  std::ofstream::app . std::ofstream::binary para que o output seja em binário
                 ofs.write(&wb, 1);
+                if (ifs.bad()){
+            cout << "the file can't be found " << ifs.rdstate() << endl;
+            }
 //              ofs.flush();
                 ofs.close();
         }
@@ -213,7 +225,8 @@ It starts reading from the least significant bit towards the most significant bi
         if (file_extension==".wav"){
             AudioFile<double> audioFile;
             AudioFile<double> audioFileOut;
-            double wb = static_cast<double>(wb);
+            double wb{};
+            wb = static_cast<double>(wb);
 
             audioFile.load(rfilename);
 
@@ -233,16 +246,16 @@ It starts reading from the least significant bit towards the most significant bi
         }
 
         if (file_extension==".png"){
-            Mat img = imread(rfilename);
+            cv::Mat img = cv::imread(rfilename);
             if (img.empty()){
                 cout << "Error : Image cannot be loaded..!!" << endl;
             }
 
-            Mat img2 = Mat::zeros(Size(img.rows, img.cols), CV_8UC3);
+            cv::Mat img2 = cv::Mat::zeros(cv::Size(img.rows, img.cols), CV_8UC3);
 
             for (int r = 0; r < img.rows; r++){
                 for (int c = 0; c < img.cols; c++){
-                    img2.at<Vec3b>(r,c);
+                    img2.at<cv::Vec3b>(r,c);
                 }
             }
             imwrite(wfilename, img2);
@@ -253,7 +266,8 @@ It starts reading from the least significant bit towards the most significant bi
 /// Method for constructing the buffer bit by bit, starting from the most significant bit towards the least significant bit.
     void Write(uint8_t bit)
     {
-        uint8_t wbuffer = static_cast<uint8_t>(wbuffer);
+        uint8_t wbuffer{};
+        wbuffer = static_cast<uint8_t>(wbuffer);
         if (nbits < buffer_size+1){            //reset do contador dos bits no buffer para saber quando o buffer está cheio e que deve escrever para o fichreiro
             bit = (bit << nbits-1);
             wbuffer = (wbuffer | bit );  ///shifts 1 possition and set the last bit of the buffer to bit
@@ -263,7 +277,7 @@ It starts reading from the least significant bit towards the most significant bi
         if (nbits==0)
             {
             nbits=buffer_size;
-            Write_file (wbuffer);
+            Write_file (wbuffer, file_extension);
             }
     }
 
@@ -283,7 +297,7 @@ operations on C++ is "8bits" so, when the user establish a smaller number of bit
             if (nbits==0)
             {
                 nbits=buffer_size;
-                Write_file (wbuffer);
+                Write_file (wbuffer, file_extension);
             }
         }
 
