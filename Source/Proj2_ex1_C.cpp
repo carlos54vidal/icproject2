@@ -10,23 +10,7 @@
 using namespace cv;
 using namespace std;
 
-Mat image =  imread("0001.png");
-int iHeight = image.size[0];
-int iWidth = image.size[1];
 
-Mat yuv;
-cvtColor(image, yuv, COLOR_BGR2YUV_I420);
-
-int bufLen = iWidth * iHeight * 3 / 2;
-unsigned char* pYuvBuf = new unsigned char[bufLen];
-
-File * pFileYuv;
-fopen_s(&pFileYuv, "0001.yuv", "wb");
-
-fwrite(yuv.data, sizeof(unsigned char), bufLen, pFileYuv);fclose(pFileYuv);
-
-pFileYuv = NULL;
-delete [] pYuvBuf;
 
 /*//sample input and output
 float data[3][1] = { 98,76,88 };
@@ -65,25 +49,52 @@ for(int i = 0; i < input.rows; i++) {
 
 
 
-int main(int argc, char* argv[])
-{
-	Mat img = imread(argv[1]);
+int main(string rfilename){
+	
+	Mat img =  imread(rfilename, IMREAD_UNCHANGED); // Loads the image file to the memory matrix "img"
 
-	if (img.empty())
-  {
-    cout << "Error : Image cannot be loaded..!!" << endl;
-    return -1;
-  }
+	if (img.empty()){
+    		cout << "Error : Image cannot be loaded..!!" << endl;
+    		return -1;
+  	}
+	
+	int nch = img.channels(); // get the number of channels of the original image
+	
+	int iHeight = img.size[0];
+	int iWidth = img.size[1];
 
-	Mat img2 = Mat::zeros(Size(img.rows, img.cols), CV_8UC3);
+	Mat yuv = Mat::zeros(Size(img.rows, img.cols), CV_8UC3); //creates a new matrix for the yuv color scheme
+	
+	cvtColor(img, yuv, COLOR_BGR2YUV); // converts RGB color values to YUV color
 
-	for (int r = 0; r < img.rows; r++)
-	{
-		for (int c = 0; c < img.cols; c++)
-		{
-			img2.at<Vec3b>(r,c) = img.at<Vec3b>(r,c);
+	
+	Scalar_<uint8_t> yuvPixel;
+	
+	
+/* the next sampling can aldo be done with the next method, which is suposed to be safer, and iteract with each value using the * operator:
+	            for( it = I.begin<uchar>(), end = I.end<uchar>(); it != end; ++it)
+                *it = table[*it]
+*/			    
+	
+		for(int i = 0; i < yuv.rows; i++){
+    			uint8_t* rowPtr = yuv.row(i);
+    			for(int j = 0; j < yuv.cols; j++){
+        			yuvPixel.val[0] = rowPtr[j*nch + 0]; // B | Y
+       				yuvPixel.val[1] = rowPtr[j*nch + 1]; // G | U -> Divide by 2 to downsample/subsample the channel for loosy data
+        			yuvPixel.val[2] = rowPtr[j*nch + 2]; // R | V -> Divide by 2 to downsample/subsample the channel for loosy data
+
+        			// do something with BGR values...
+    			
+			yuv = yuvPixel; // replaces YUV values with yuvPixel values
+			
+			}
 		}
-	}
-	imwrite(argv[2], img2);
+
+
+		
+		
+	
+	
+	
 	return 0;
 }
