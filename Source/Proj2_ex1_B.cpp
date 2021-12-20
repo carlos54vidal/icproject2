@@ -34,13 +34,22 @@ int main(){
     The mid channel is the sum of the left and right channels, or M = L + R.
     The side channel is the difference of the left and right channels, or S = L − R .
     To reconstruct the original signal, the channels are either added  L = M + S or subtracted R = M − S.
-    This form of coding is also sometimes known as matrix stereo and is used in many different forms of audio processing and recording equipment.
 */
         mid_sample = (left_sample + rigt_sample)/2;
         side_sample =  left_sample - rigt_sample;
     }
 //Fixed Linear and
 //Finite Impulse Response linear
+/* Polynomial interpolation:
+P0 = 0
+P1 = X(n-1)
+P2 = 2X(n-1) - x(n-2)
+P3 = 3X(n-1) - 3x(n-2) + x(n-3)
+P4 = 4X(n-1) - 6x(n-2) + 4X(n-3) - x(n-4)
+The most eficient way to implemet this is with a circula buffer 
+*/
+
+
 
     for (i>4){
 
