@@ -127,7 +127,6 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
             if (ifs.fail()){
                 cout << "the file can't be found " << ifs.rdstate() << endl;
             }
-
         }
             cout << "filesize 117 " <<  ifs.tellg() << endl;
             cout << "In = " <<  rfilename << endl;
