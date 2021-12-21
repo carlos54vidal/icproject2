@@ -16,7 +16,7 @@ using namespace std;
 
 int main(){
 
-	Mat original =  imread("tulips.ppm", cv::IMREAD_COLOR); // Loads the image file to the memory matrix "original"
+	Mat original =  imread("./tulips.ppm", cv::IMREAD_COLOR); // Loads the image file to the memory matrix "original"
 
 	if (original.empty()){
     		cout << "Error : Image cannot be loaded..!!" << endl;
@@ -27,8 +27,8 @@ int main(){
 
 	short iHeight = original.size[0];
 	short iWidth = original.size[1];
-	int UVHeight = iHeight/4;
-    int UVWidth = iWidth/4;
+	int UVHeight = iHeight/2;
+    int UVWidth = iWidth/2;
 
 	imshow("Original Image", original);
 
