@@ -13,7 +13,6 @@ using namespace std;
 
 
 
-
 int main(){
 
 	Mat original =  imread("./tulips.ppm", cv::IMREAD_COLOR); // Loads the image file to the memory matrix "original"
@@ -48,22 +47,20 @@ int main(){
 
 	split(resized_down, rd_splitChannels);
 
-    Mat Ueven;
-
-    Mat Uuneven;
-
-    Mat Veven;
-
-    Mat Vuneven;
+    Mat Ueven, Uuneven, Veven, Vuneven;
 
     for (int i=0; i<resized_down.rows; i+=2){
         Ueven.push_back(rd_splitChannels[1].row(i));
-        Veven.push_back(rd_splitChannels[1].row(i));
+        Veven.push_back(rd_splitChannels[2].row(i));
     }
      for (int i=1; i<resized_down.rows; i+=2){
-        Uuneven.push_back(rd_splitChannels[2].row(i));
+        Uuneven.push_back(rd_splitChannels[1].row(i));
         Vuneven.push_back(rd_splitChannels[2].row(i));
     }
+
+     resized_down.release();
+
+     Mat Uchannel, Vchannel, YUV420_1, YUV420;
 
     hconcat(Ueven, Uuneven, Uchannel);
     hconcat(Veven, Vuneven, Vchannel);
@@ -76,7 +73,12 @@ int main(){
     Mat splitChannels[3];
     split(yuvcolor, splitChannels);
 
-    vconcat (splitChannels[0], Uchannel, Vchannel, YUV420)
+    vconcat(splitChannels[0], Uchannel, YUV420_1);
+    vconcat(YUV420_1, Vchannel, YUV420);
+
+    Uchannel.release();
+    Vchannel.release();
+    YUV420_1.release();
 
     imshow("YUV 4:2:0", YUV420);
 
