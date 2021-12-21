@@ -50,32 +50,38 @@ for(int i = 0; i < input.rows; i++) {
 
 
 int main(string rfilename){
-	
-	Mat img =  imread(rfilename, IMREAD_UNCHANGED); // Loads the image file to the memory matrix "img"
 
-	if (img.empty()){
+	Mat original =  imread(rfilename, IMREAD_UNCHANGED); // Loads the image file to the memory matrix "original"
+
+	if (original.empty()){
     		cout << "Error : Image cannot be loaded..!!" << endl;
     		return -1;
   	}
-	
-	int nch = img.channels(); // get the number of channels of the original image
-	
-	int iHeight = img.size[0];
-	int iWidth = img.size[1];
 
-	Mat yuv = Mat::zeros(Size(img.rows, img.cols), CV_8UC3); //creates a new matrix for the yuv color scheme
-	
-	cvtColor(img, yuv, COLOR_BGR2YUV); // converts RGB color values to YUV color
+	int nch = original.channels(); // get the number of channels of the original image
 
-	
+	int iHeight = original.size[0];
+	int iWidth = original.size[1];
+
+	Mat yuv = Mat::zeros(Size(original.rows, original.cols), CV_8UC3); //creates a new matrix for the yuv color scheme
+
+	cvtColor(original, yuv, COLOR_BGR2YUV); // converts RGB color values to YUV color
+
+
+	Mat splitChannels[3];
+
+	splitChannels (original, splitChannels);
+
+
+
+
+
+
+
+
+
 	Scalar_<uint8_t> yuvPixel;
-	
-	
-/* the next sampling can aldo be done with the next method, which is suposed to be safer, and iteract with each value using the * operator:
-	            for( it = I.begin<uchar>(), end = I.end<uchar>(); it != end; ++it)
-                *it = table[*it]
-*/			    
-	
+
 		for(int i = 0; i < yuv.rows; i++){
     			uint8_t* rowPtr = yuv.row(i);
     			for(int j = 0; j < yuv.cols; j++){
@@ -84,17 +90,17 @@ int main(string rfilename){
         			yuvPixel.val[2] = rowPtr[j*nch + 2]; // R | V -> Divide by 2 to downsample/subsample the channel for loosy data
 
         			// do something with BGR values...
-    			
+
 			yuv = yuvPixel; // replaces YUV values with yuvPixel values
-			
+
 			}
 		}
 
 
-		
-		
-	
-	
-	
+
+
+
+
+
 	return 0;
 }
