@@ -25,31 +25,64 @@ int main(){
 
 	int nch = original.channels(); // get the number of channels of the original image
 
-	short iHeight = original.size[0];
-	short iWidth = original.size[1];
+	int iHeight = original.size[0];
+	int iWidth = original.size[1];
 	int UVHeight = iHeight/2;
     int UVWidth = iWidth/2;
 
 	imshow("Original Image", original);
 
-//	Mat yuv = Mat::zeros(Size(original.rows, original.cols), CV_8UC3); //creates a new matrix for the yuv color scheme
+	Mat yuvcolor = Mat::zeros(Size(original.rows, original.cols), CV_8UC3);//creates a new matrix for the yuv color scheme
+
+	cvtColor(original, yuvcolor, COLOR_BGR2YUV); // converts RGB color values to YUV color
+
+    imshow("YUV Image", yuvcolor);
+
     Mat resized_down;
 
     resize(original, resized_down, Size(UVWidth, UVHeight), INTER_CUBIC);
 
-    imshow("Resized Down by defining height and width", resized_down);
+//    imshow("Resized Down by defining height and width", resized_down);
+
+	Mat rd_splitChannels[3];
+
+	split(resized_down, rd_splitChannels);
+
+    Mat Ueven;
+
+    Mat Uuneven;
+
+    Mat Veven;
+
+    Mat Vuneven;
+
+    for (int i=0; i<resized_down.rows; i+=2){
+        Ueven.push_back(rd_splitChannels[1].row(i));
+        Veven.push_back(rd_splitChannels[1].row(i));
+    }
+     for (int i=1; i<resized_down.rows; i+=2){
+        Uuneven.push_back(rd_splitChannels[2].row(i));
+        Vuneven.push_back(rd_splitChannels[2].row(i));
+    }
+
+    hconcat(Ueven, Uuneven, Uchannel);
+    hconcat(Veven, Vuneven, Vchannel);
+
+    Ueven.release();
+    Uuneven.release();
+    Veven.release();
+    Vuneven.release();
+
+    Mat splitChannels[3];
+    split(yuvcolor, splitChannels);
+
+    vconcat (splitChannels[0], Uchannel, Vchannel, YUV420)
+
+    imshow("YUV 4:2:0", YUV420);
 
     waitKey();
 
     destroyAllWindows();
-
-//	Mat splitChannels[3];
-
-//	splitChannels (original, splitChannels);
-
-
-
-
 
 
 /*
