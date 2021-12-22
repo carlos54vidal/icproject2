@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 #include <filesystem> /** It needs a compiler that supports the C++17 language standard, which is implemented e.g. on the g++ compiler from the version 8 onwards,
-                        but it�s recommended a g++ version release 9 or newer for full support. https://gcc.gnu.org/gcc-9/changes.html#cxx **/
+                        but it's recommended a g++ version release 9 or newer for full support. https://gcc.gnu.org/gcc-9/changes.html#cxx **/
 
 #include "Dependencies/opencv2/core/core.hpp"
 #include "Dependencies/opencv2/highgui/highgui.hpp"
@@ -13,11 +13,12 @@ using namespace cv;
 using namespace std;
 
 string rfilename; // argument for the original image filename (and path)
+using sample_type = uint8_t;
 
 int main(){
 
-    rfilename = "C:/Users/carlo/Documents/GitHub/icproject2/Source/tulips.ppm"; // pass the first argument into the attribute that stores the original image filename (and path)
-    
+    rfilename = "./tulips.ppm"; // pass the first argument into the attribute that stores the original image filename (and path)
+
  //   std::filesystem::path p = rfilename; /* constructs the path that corresponds to the current file system or OS, from the character sequence
  //                                           stored on the rfilename attribute */
 
@@ -48,7 +49,15 @@ int main(){
     Mat splitChannels[3];
     split(yuvcolor, splitChannels);
 
- //   double maxVal;
+    double minVal, maxVal;
+    Point minLoc;
+    Point maxLoc;
+
+    minMaxLoc(splitChannels[0], &minVal, &maxVal, &minLoc, &maxLoc);
+
+    if (maxVal >= 256){
+        sample_type = int16_t;
+    }
 
     Mat resized_down; // creates a matrix for UV channel downsampling
 
@@ -61,13 +70,78 @@ int main(){
 	split(resized_down, rd_splitChannels); // separates the 3 YUV channels from the downsapled matrix and loads them to the rd_splitChannels matrix
 
     Mat UChannel, VChannel;
-    
+
     UChannel = rd_splitChannels[1] /*.reshape(1, UVHeight / 2)*/; // apply reshape if needed
     VChannel = rd_splitChannels[2] /*.reshape(1, UVHeight/2)*/; // apply reshape if needed
 
     rd_splitChannels[3].release();
 
-        imshow("YUV 4:2:0", VChannel);
+    Mat YChannel = splitChannels[0];
+
+    splitChannels[3].release();
+
+// JPEG mode 6 predictor formula: X = B + ((A − C)/2), onde: X=(r,c); A=(r,c-1); B=(r-1,c) e C=(r-1,c-1)
+//A=YChannel.at<uint8_t>(r,c-1), B=YChannel.at<uint8_t>(r-1,c) e C=YChannel.at<uint8_t>(r-1,c-1)
+
+    Mat YPredict;
+
+    for (int r = 0; r < iHeight; r++){
+        for (int c = 0; c < iWidth; c++){
+            if (r==0){
+                YPredict.at<sample_type>(0,c) = YChannel.at<sample_type>(0,c);
+            }
+            if (c==0){
+                YPredict.at<sample_type>(r,0) = YChannel.at<sample_type>(r,0);
+            }
+            else{
+                YPredict.at<sample_type>(r,c) = (YChannel.at<sample_type>(r,c))-((YChannel.at<sample_type>(r-1,c))+(((YChannel.at<sample_type>(r,c-1))-(YChannel.at<sample_type>(r-1,c-1)))/2));
+            }
+        }
+    }
+
+    Mat UPredict;
+
+    for (int r = 0; r < UVHeight; r++){
+        for (int c = 0; c < UVWidth; c++){
+            if (r==0){
+                UPredict.at<sample_type>(0,c) = UChannel.at<sample_type>(0,c);
+            }
+            if (c==0){
+                UPredict.at<sample_type>(r,0) = UChannel.at<sample_type>(r,0);
+            }
+            else{
+                UPredict.at<sample_type>(r,c) = (UChannel.at<sample_type>(r,c))-((UChannel.at<sample_type>(r-1,c))+(((UChannel.at<sample_type>(r,c-1))-(UChannel.at<sample_type>(r-1,c-1)))/2));
+            }
+        }
+    }
+
+    Mat VPredict;
+
+    for (int r = 0; r < UVHeight; r++){
+        for (int c = 0; c < UVWidth; c++){
+            if (r==0){
+                VPredict.at<sample_type>(0,c) = VChannel.at<sample_type>(0,c);
+            }
+            if (c==0){
+                VPredict.at<sample_type>(r,0) = VChannel.at<sample_type>(r,0);
+            }
+            else{
+                VPredict.at<sample_type>(r,c) = (VChannel.at<sample_type>(r,c))-((VChannel.at<sample_type>(r-1,c))+(((VChannel.at<sample_type>(r,c-1))-(VChannel.at<sample_type>(r-1,c-1)))/2));
+            }
+        }
+    }
+
+    UPredict = UPredict.reshape(1, UVHeight / 2); // align the uneven rows right of the even ones
+    VPredict = VPredict.reshape(1, UVHeight / 2); // align the uneven rows right of the even ones
+
+    Mat YUVPredict;
+
+    vconcat(YPredict, UPredict, YUVPredict);
+    vconcat(YUVPredict, VPredict, YUVPredict);
+
+
+
+        imshow("YUV 4:2:0", YUVPredict);
 
     waitKey();
 
