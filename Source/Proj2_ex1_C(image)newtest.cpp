@@ -47,6 +47,9 @@ int main(int argc, char* argv[]){
     Mat splitChannels[3];
     split(yuvcolor, splitChannels);
 
+ //   double maxVal;
+
+
     Mat resized_down; // creates a matrix for UV channel downsampling
 
     resize(yuvcolor, resized_down, Size(UVWidth, UVHeight), INTER_CUBIC); // downsamples the YUV matrix with the bicubic 4x4 interpolation
@@ -57,75 +60,19 @@ int main(int argc, char* argv[]){
 
 	split(resized_down, rd_splitChannels); // separates the 3 YUV channels from the downsapled matrix and loads them to the rd_splitChannels matrix
 
-    Mat Ueven, Uuneven, Veven, Vuneven; /* creates matrixes for storing even and uneven rows of the U and V channels, in order to later stack them
-                                        side by side and fill the with of the original image */
 
-// Fill the U and V matrixes with even and uneven rows:
-    for (int i=0; i<resized_down.rows; i+=2){
-        Ueven.push_back(rd_splitChannels[1].row(i));
-        Veven.push_back(rd_splitChannels[2].row(i));
-    }
-     for (int i=1; i<resized_down.rows; i+=2){
-        Uuneven.push_back(rd_splitChannels[1].row(i));
-        Vuneven.push_back(rd_splitChannels[2].row(i));
-    }
+    Mat UChannel = rd_splitChannels[1];
+    Mat VChannel = rd_splitChannels[2];
 
-     resized_down.release(); //free some memory because resized_down matrix is no longer needed
+    UChannel = UChannel.reshape(1, UVHeight/2);
+    VChannel = VChannel.reshape(1, UVHeight/2);
 
-     Mat Uchannel, Vchannel, YUV420_1, YUV420; /* create matrixes to merge previous uneven rows to the right of the even rows and the matrix for
-                                                the final YUV420 formated image */
-
-    hconcat(Ueven, Uuneven, Uchannel); /* load the downsapled image with the U values, to the Uchannel matrix. Previous even rows on the right and
-                                        uneven rows on the left side */
-    hconcat(Veven, Vuneven, Vchannel); /* load the downsapled image with the V values, to the Vchannel matrix. Previous even rows on the right and
-                                        uneven rows on the left side */
-// Free some memory:
-    Ueven.release();
-    Uuneven.release();
-    Veven.release();
-    Vuneven.release();
-
-// Join the Y channel (original size) with the U channel (half size) followed by the V channel, vertically:
-    vconcat(splitChannels[0], Uchannel, YUV420_1);
-    vconcat(YUV420_1, Vchannel, YUV420);
-
-// Free some memory:
-    Uchannel.release();
-    Vchannel.release();
-    YUV420_1.release();
-
-
-    imshow("YUV 4:2:0", YUV420);
+        imshow("YUV 4:2:0", YUV420);
 
     waitKey();
 
     destroyAllWindows();
 
-
-/*
-
-
-	Scalar_<uint8_t> yuvPixel;
-
-		for(int i = 0; i < yuv.rows; i++){
-    			uint8_t* rowPtr = yuv.row(i);
-    			for(int j = 0; j < yuv.cols; j++){
-        			yuvPixel.val[0] = rowPtr[j*nch + 0]; // B | Y
-       				yuvPixel.val[1] = rowPtr[j*nch + 1]; // G | U -> Divide by 2 to downsample/subsample the channel for loosy data
-        			yuvPixel.val[2] = rowPtr[j*nch + 2]; // R | V -> Divide by 2 to downsample/subsample the channel for loosy data
-
-        			// do something with BGR values...
-
-			yuv = yuvPixel; // replaces YUV values with yuvPixel values
-
-			}
-		}
-
-
-
-
-
-*/
 
 	return 0;
 }
