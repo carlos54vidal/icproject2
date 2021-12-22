@@ -14,17 +14,18 @@ using namespace std;
 
 string rfilename; // argument for the original image filename (and path)
 
-int main(int argc, char* argv[]){
+int main(){
 
-    rfilename = argv[1]; // pass the first argument into the attribute that stores the original image filename (and path)
-    std::filesystem::path p = rfilename; /* constructs the path that corresponds to the current file system or OS, from the character sequence
-                                            stored on the rfilename attribute */
+    rfilename = "C:/Users/carlo/Documents/GitHub/icproject2/Source/tulips.ppm"; // pass the first argument into the attribute that stores the original image filename (and path)
+    
+ //   std::filesystem::path p = rfilename; /* constructs the path that corresponds to the current file system or OS, from the character sequence
+ //                                           stored on the rfilename attribute */
 
-	Mat original = imread("./tulips.ppm", cv::IMREAD_UNCHANGED); // Loads the image file to the memory matrix "original"
+	Mat original = imread(rfilename, cv::IMREAD_UNCHANGED); // Loads the image file to the memory matrix "original"
 
 
 	if (original.empty()){ // if the file is not loaded prints a message on the terminal console or command prompt
-    		cout << "Error : Image on " << std::filesystem::absolute(p) << " can't be loaded..!!" << endl;
+    		cout << "Error : Image on " << " can't be loaded..!!" << endl;
     		return -1; // exits the aplication
   	}
 
@@ -49,7 +50,6 @@ int main(int argc, char* argv[]){
 
  //   double maxVal;
 
-
     Mat resized_down; // creates a matrix for UV channel downsampling
 
     resize(yuvcolor, resized_down, Size(UVWidth, UVHeight), INTER_CUBIC); // downsamples the YUV matrix with the bicubic 4x4 interpolation
@@ -60,14 +60,14 @@ int main(int argc, char* argv[]){
 
 	split(resized_down, rd_splitChannels); // separates the 3 YUV channels from the downsapled matrix and loads them to the rd_splitChannels matrix
 
+    Mat UChannel, VChannel;
+    
+    UChannel = rd_splitChannels[1] /*.reshape(1, UVHeight / 2)*/; // apply reshape if needed
+    VChannel = rd_splitChannels[2] /*.reshape(1, UVHeight/2)*/; // apply reshape if needed
 
-    Mat UChannel = rd_splitChannels[1];
-    Mat VChannel = rd_splitChannels[2];
+    rd_splitChannels[3].release();
 
-    UChannel = UChannel.reshape(1, UVHeight/2);
-    VChannel = VChannel.reshape(1, UVHeight/2);
-
-        imshow("YUV 4:2:0", YUV420);
+        imshow("YUV 4:2:0", VChannel);
 
     waitKey();
 
