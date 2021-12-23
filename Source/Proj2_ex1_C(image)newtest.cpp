@@ -17,16 +17,16 @@ using sample_type = uint8_t;
 
 int main(){
 
-    rfilename = "./tulips.ppm"; // pass the first argument into the attribute that stores the original image filename (and path)
+    rfilename = "tulips.ppm"; // pass the first argument into the attribute that stores the original image filename (and path)
 
- //   std::filesystem::path p = rfilename; /* constructs the path that corresponds to the current file system or OS, from the character sequence
- //                                           stored on the rfilename attribute */
+    std::filesystem::path p = rfilename; /* constructs the path that corresponds to the current file system or OS, from the character sequence
+                                            stored on the rfilename attribute */
 
 	Mat original = imread(rfilename, cv::IMREAD_UNCHANGED); // Loads the image file to the memory matrix "original"
 
 
 	if (original.empty()){ // if the file is not loaded prints a message on the terminal console or command prompt
-    		cout << "Error : Image on " << " can't be loaded..!!" << endl;
+    		cout << "Error : Image on " << std::filesystem::absolute(p) << " can't be loaded..!!" << endl;
     		return -1; // exits the aplication
   	}
 
@@ -53,10 +53,10 @@ int main(){
     Point minLoc;
     Point maxLoc;
 
-    minMaxLoc(splitChannels[0], &minVal, &maxVal, &minLoc, &maxLoc);
+    minMaxLoc(splitChannels[2], &minVal, &maxVal, &minLoc, &maxLoc);
 
-    if (maxVal >= 256){
-        sample_type = int16_t;
+   if (maxVal >= 256){
+       using sample_type = short;
     }
 
     Mat resized_down; // creates a matrix for UV channel downsampling
@@ -65,68 +65,73 @@ int main(){
 
 //    imshow("Resized Down by defining height and width", resized_down);
 
-	Mat rd_splitChannels[3]; // creates a matrix for 3 separate channels
+ //   yuvcolor.release();
+ //   original.release();
+    
+    Mat rd_splitChannels[3]; // creates a matrix for 3 separate channels
 
 	split(resized_down, rd_splitChannels); // separates the 3 YUV channels from the downsapled matrix and loads them to the rd_splitChannels matrix
 
     Mat UChannel, VChannel;
 
     UChannel = rd_splitChannels[1] /*.reshape(1, UVHeight / 2)*/; // apply reshape if needed
-    VChannel = rd_splitChannels[2] /*.reshape(1, UVHeight/2)*/; // apply reshape if needed
+    VChannel = rd_splitChannels[0] /*.reshape(1, UVHeight/2)*/; // apply reshape if needed
 
-    rd_splitChannels[3].release();
+ //   rd_splitChannels[3].release();
 
-    Mat YChannel = splitChannels[0];
-
-    splitChannels[3].release();
+    Mat YChannel = Mat::zeros(Size(iHeight, iWidth), CV_8UC1);
+    
+    YChannel = splitChannels[2];
 
 // JPEG mode 6 predictor formula: X = B + ((A − C)/2), onde: X=(r,c); A=(r,c-1); B=(r-1,c) e C=(r-1,c-1)
 //A=YChannel.at<uint8_t>(r,c-1), B=YChannel.at<uint8_t>(r-1,c) e C=YChannel.at<uint8_t>(r-1,c-1)
 
-    Mat YPredict;
+//   splitChannels[3].release();
+
+    Mat YPredict = Mat::zeros(Size(iHeight, iWidth), CV_8UC1);
 
     for (int r = 0; r < iHeight; r++){
         for (int c = 0; c < iWidth; c++){
             if (r==0){
-                YPredict.at<sample_type>(0,c) = YChannel.at<sample_type>(0,c);
+                YPredict.at<uint8_t>(r,c) = YChannel.at<uint8_t>(r,c);
             }
             if (c==0){
-                YPredict.at<sample_type>(r,0) = YChannel.at<sample_type>(r,0);
+                YPredict.at<uint8_t>(r,c) = YChannel.at<uint8_t>(r,c);
             }
             else{
-                YPredict.at<sample_type>(r,c) = (YChannel.at<sample_type>(r,c))-((YChannel.at<sample_type>(r-1,c))+(((YChannel.at<sample_type>(r,c-1))-(YChannel.at<sample_type>(r-1,c-1)))/2));
+                YPredict.at<uint8_t>(r,c) = (YChannel.at<uint8_t>(r,c))-((YChannel.at<uint8_t>(r-1,c))+(((YChannel.at<uint8_t>(r,c-1))-(YChannel.at<uint8_t>(r-1,c-1)))/2));
             }
         }
     }
 
-    Mat UPredict;
+    Mat UPredict = Mat::zeros(Size(UVHeight, UVWidth), CV_8UC1);
 
     for (int r = 0; r < UVHeight; r++){
         for (int c = 0; c < UVWidth; c++){
             if (r==0){
-                UPredict.at<sample_type>(0,c) = UChannel.at<sample_type>(0,c);
+                UPredict.at<uint8_t>(r,c) = UChannel.at<uint8_t>(r,c);
             }
             if (c==0){
-                UPredict.at<sample_type>(r,0) = UChannel.at<sample_type>(r,0);
+                UPredict.at<uint8_t>(r,c) = UChannel.at<uint8_t>(r,c);
             }
             else{
-                UPredict.at<sample_type>(r,c) = (UChannel.at<sample_type>(r,c))-((UChannel.at<sample_type>(r-1,c))+(((UChannel.at<sample_type>(r,c-1))-(UChannel.at<sample_type>(r-1,c-1)))/2));
+                UPredict.at<uint8_t>(r,c) = (UChannel.at<uint8_t>(r,c))-((UChannel.at<uint8_t>(r-1,c))+(((UChannel.at<uint8_t>(r,c-1))-(UChannel.at<uint8_t>(r-1,c-1)))/2));
             }
         }
     }
 
-    Mat VPredict;
+    Mat VPredict = Mat::zeros(Size(UVHeight, UVWidth), CV_8UC1);
 
     for (int r = 0; r < UVHeight; r++){
         for (int c = 0; c < UVWidth; c++){
             if (r==0){
-                VPredict.at<sample_type>(0,c) = VChannel.at<sample_type>(0,c);
+                VPredict.at<uint8_t>(r,c) = VChannel.at<uint8_t>(r,c);
             }
             if (c==0){
-                VPredict.at<sample_type>(r,0) = VChannel.at<sample_type>(r,0);
+                VPredict.at<uint8_t>(r,c) = VChannel.at<uint8_t>(r,c);
             }
             else{
-                VPredict.at<sample_type>(r,c) = (VChannel.at<sample_type>(r,c))-((VChannel.at<sample_type>(r-1,c))+(((VChannel.at<sample_type>(r,c-1))-(VChannel.at<sample_type>(r-1,c-1)))/2));
+                VPredict.at<uint8_t>(r,c) = (VChannel.at<uint8_t>(r,c))-((VChannel.at<uint8_t>(r-1,c))+(((VChannel.at<uint8_t>(r,c-1))-(VChannel.at<uint8_t>(r-1,c-1)))/2));
             }
         }
     }
