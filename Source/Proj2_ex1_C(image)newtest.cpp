@@ -67,7 +67,7 @@ int main(){
 
  //   yuvcolor.release();
  //   original.release();
-    
+
     Mat rd_splitChannels[3]; // creates a matrix for 3 separate channels
 
 	split(resized_down, rd_splitChannels); // separates the 3 YUV channels from the downsapled matrix and loads them to the rd_splitChannels matrix
@@ -80,7 +80,7 @@ int main(){
  //   rd_splitChannels[3].release();
 
     Mat YChannel = Mat::zeros(Size(iHeight, iWidth), CV_8UC1);
-    
+
     YChannel = splitChannels[2];
 
 // JPEG mode 6 predictor formula: X = B + ((A − C)/2), onde: X=(r,c); A=(r,c-1); B=(r-1,c) e C=(r-1,c-1)
@@ -88,53 +88,74 @@ int main(){
 
 //   splitChannels[3].release();
 
-    Mat YPredict = Mat::zeros(Size(iHeight, iWidth), CV_8UC1);
+    YChannel.convertTo(YChannel, CV_16SC1);
+    UChannel.convertTo(UChannel, CV_16SC1);
+    VChannel.convertTo(VChannel, CV_16SC1);
+
+    Mat YPredict = Mat::zeros(Size(iHeight, iWidth), CV_16SC1);
 
     for (int r = 0; r < iHeight; r++){
         for (int c = 0; c < iWidth; c++){
             if (r==0){
-                YPredict.at<uint8_t>(r,c) = YChannel.at<uint8_t>(r,c);
+                YPredict.at<short>(r,c) = YChannel.at<short>(r,c);
             }
             if (c==0){
-                YPredict.at<uint8_t>(r,c) = YChannel.at<uint8_t>(r,c);
+                YPredict.at<short>(r,c) = YChannel.at<short>(r,c);
             }
             else{
-                YPredict.at<uint8_t>(r,c) = (YChannel.at<uint8_t>(r,c))-((YChannel.at<uint8_t>(r-1,c))+(((YChannel.at<uint8_t>(r,c-1))-(YChannel.at<uint8_t>(r-1,c-1)))/2));
+                YPredict.at<short>(r,c) = (YChannel.at<short>(r,c))-((YChannel.at<short>(r-1,c))+(((YChannel.at<short>(r,c-1))-(YChannel.at<short>(r-1,c-1)))/2));
             }
         }
     }
 
-    Mat UPredict = Mat::zeros(Size(UVHeight, UVWidth), CV_8UC1);
+    Mat UPredict = Mat::zeros(Size(UVHeight, UVWidth), CV_16SC1);
 
     for (int r = 0; r < UVHeight; r++){
         for (int c = 0; c < UVWidth; c++){
             if (r==0){
-                UPredict.at<uint8_t>(r,c) = UChannel.at<uint8_t>(r,c);
+                UPredict.at<short>(r,c) = UChannel.at<short>(r,c);
             }
             if (c==0){
-                UPredict.at<uint8_t>(r,c) = UChannel.at<uint8_t>(r,c);
+                UPredict.at<short>(r,c) = UChannel.at<short>(r,c);
             }
             else{
-                UPredict.at<uint8_t>(r,c) = (UChannel.at<uint8_t>(r,c))-((UChannel.at<uint8_t>(r-1,c))+(((UChannel.at<uint8_t>(r,c-1))-(UChannel.at<uint8_t>(r-1,c-1)))/2));
+
+                short* residual = (((UChannel.at<short>(r,c-1))-(UChannel.at<short>(r-1,c-1)))/2);
+
+                residual = (UChannel.at<short>(r-1,c))+residual;
+
+                residual = (UChannel.at<short>(r,c))- residual;
+
+                UPredict.at<short>(r,c) = residual;
             }
         }
     }
 
-    Mat VPredict = Mat::zeros(Size(UVHeight, UVWidth), CV_8UC1);
+    Mat VPredict = Mat::zeros(Size(UVHeight, UVWidth), CV_16SC1);
 
     for (int r = 0; r < UVHeight; r++){
         for (int c = 0; c < UVWidth; c++){
             if (r==0){
-                VPredict.at<uint8_t>(r,c) = VChannel.at<uint8_t>(r,c);
+                VPredict.at<short>(r,c) = VChannel.at<short>(r,c);
             }
             if (c==0){
-                VPredict.at<uint8_t>(r,c) = VChannel.at<uint8_t>(r,c);
+                VPredict.at<short>(r,c) = VChannel.at<short>(r,c);
             }
             else{
-                VPredict.at<uint8_t>(r,c) = (VChannel.at<uint8_t>(r,c))-((VChannel.at<uint8_t>(r-1,c))+(((VChannel.at<uint8_t>(r,c-1))-(VChannel.at<uint8_t>(r-1,c-1)))/2));
+                short* residual = (((VChannel.at<short>(r,c-1))-(VChannel.at<short>(r-1,c-1)))/2);
+
+                residual = (VChannel.at<short>(r-1,c))+residual;
+
+                residual = (VChannel.at<short>(r,c))- residual;
+
+                VPredict.at<short>(r,c) = residual;
             }
         }
     }
+
+    YChannel.convertTo(YChannel, CV_8UC1);
+    UChannel.convertTo(UChannel, CV_8UC1);
+    VChannel.convertTo(VChannel, CV_8UC1);
 
     UPredict = UPredict.reshape(1, UVHeight / 2); // align the uneven rows right of the even ones
     VPredict = VPredict.reshape(1, UVHeight / 2); // align the uneven rows right of the even ones
