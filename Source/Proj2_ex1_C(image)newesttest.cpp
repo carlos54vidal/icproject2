@@ -14,6 +14,13 @@ using namespace std;
 
 string rfilename; // argument for the original image filename (and path)
 using sample_type = uint8_t;
+Mat YUVPredict;
+
+Mat translateImg(Mat& img, int offsetx, int offsety) {
+    Mat trans_mat = (Mat_<double>(2, 3) << 1, 0, offsetx, 0, 1, offsety);
+    warpAffine(img, img, trans_mat, img.size());
+    return img;
+}
 
 int main(){
 
@@ -37,15 +44,15 @@ int main(){
 	int UVHeight = iHeight/2; // set the U and V channel height for a 4:2:0 downsampling
     int UVWidth = iWidth/2; // set the U and V channel width for a 4:2:0 downsampling
 
-	imshow("Original Image", original);
+//	imshow("Original Image", original);
 
 	Mat yuvcolor = Mat::zeros(Size(original.rows, original.cols), CV_8UC3);//creates a new matrix for the yuv color scheme with 3 channels
 
 	cvtColor(original, yuvcolor, COLOR_BGR2YUV); // converts RGB color values to YUV color and loads the values on the yuv matrix
 
-    imshow("YUV Image", yuvcolor);
+ //   imshow("YUV Image", yuvcolor);
 
-//split the channels of the yuvcolor matrix:
+///split the channels of the yuvcolor matrix:
     Mat splitChannels[3];
     split(yuvcolor, splitChannels);
 
@@ -65,8 +72,8 @@ int main(){
 
 //    imshow("Resized Down by defining height and width", resized_down);
 
- //   yuvcolor.release();
- //   original.release();
+    yuvcolor.release();
+    original.release();
 
     Mat rd_splitChannels[3]; // creates a matrix for 3 separate channels
 
@@ -81,7 +88,9 @@ int main(){
 
     Mat YChannel = Mat::zeros(Size(iHeight, iWidth), CV_8UC1);
 
-    YChannel = splitChannels[2];
+    YChannel = splitChannels[2].clone();
+
+//    imshow("Y", YChannel);
 
 // JPEG mode 6 predictor formula: X = B + ((A − C)/2), onde: X=(r,c); A=(r,c-1); B=(r-1,c) e C=(r-1,c-1)
 //A=YChannel.at<uint8_t>(r,c-1), B=YChannel.at<uint8_t>(r-1,c) e C=YChannel.at<uint8_t>(r-1,c-1)
@@ -92,82 +101,56 @@ int main(){
     UChannel.convertTo(UChannel, CV_16SC1);
     VChannel.convertTo(VChannel, CV_16SC1);
 
-    Mat YPredict = Mat::zeros(Size(iHeight, iWidth), CV_16SC1);
+    Mat YResidual = Mat::zeros(Size(iHeight, iWidth), CV_16SC1);
 
-    for (int r = 0; r < iHeight; r++){
-        for (int c = 0; c < iWidth; c++){
-            if (r==0){
-                YPredict.at<short>(r,c) = YChannel.at<short>(r,c);
-            }
-            if (c==0){
-                YPredict.at<short>(r,c) = YChannel.at<short>(r,c);
-            }
-            else{
-                YPredict.at<short>(r,c) = (YChannel.at<short>(r,c))-((YChannel.at<short>(r-1,c))+(((YChannel.at<short>(r,c-1))-(YChannel.at<short>(r-1,c-1)))/2));
-            }
+    using sample_type = short;
+
+    for (int r = 1; r < iHeight; r++){
+        for (int c = 1; c < iWidth; c++){
+                YResidual.at<short>(r,c) = (YChannel.at<short>(r,c))-((YChannel.at<short>(r-1,c))+(((YChannel.at<short>(r,c-1))-(YChannel.at<short>(r-1,c-1)))/2));
         }
-    }
+    }/*
+    YChannel.row(0).copyTo(YResidual.row(0));
+    YChannel.col(0).copyTo(YResidual.col(0));
+    */
+    Mat UResidual = Mat::zeros(Size(UVHeight, UVWidth), CV_16SC1);
+    for (int r = 1; r < UVHeight; r++){
+        for (int c = 1; c < UVWidth; c++){
+                short uresidual = (((UChannel.at<short>(r,c-1))-(UChannel.at<short>(r-1,c-1)))/2);
 
-    Mat UPredict = Mat::zeros(Size(UVHeight, UVWidth), CV_16SC1);
+                uresidual = (UChannel.at<short>(r-1,c))+uresidual;
 
-    for (int r = 0; r < UVHeight; r++){
-        for (int c = 0; c < UVWidth; c++){
-            if (r==0){
-                UPredict.at<short>(r,c) = UChannel.at<short>(r,c);
-            }
-            if (c==0){
-                UPredict.at<short>(r,c) = UChannel.at<short>(r,c);
-            }
-            else{
+                uresidual = (UChannel.at<short>(r,c))-uresidual;
 
-                short* residual = (((UChannel.at<short>(r,c-1))-(UChannel.at<short>(r-1,c-1)))/2);
-
-                residual = (UChannel.at<short>(r-1,c))+residual;
-
-                residual = (UChannel.at<short>(r,c))- residual;
-
-                UPredict.at<short>(r,c) = residual;
-            }
-        }
-    }
-
+                UResidual.at<short>(r,c) = uresidual;
+         }
+    }/*
+    UChannel.row(0).copyTo(UResidual.row(0));
+    UChannel.col(0).copyTo(UResidual.col(0));
+*/
     Mat VPredict = Mat::zeros(Size(UVHeight, UVWidth), CV_16SC1);
+    Mat A = VChannel.clone();
+    Mat C = VChannel.clone();
+    Mat B = VChannel.clone();
+    
+    translateImg(C, 0, 1);
+    translateImg(B, 1, 0);
+    A -= C;
+    addWeighted(B, 1, A, 0.5, 0.0, VPredict);
 
-    for (int r = 0; r < UVHeight; r++){
-        for (int c = 0; c < UVWidth; c++){
-            if (r==0){
-                VPredict.at<short>(r,c) = VChannel.at<short>(r,c);
-            }
-            if (c==0){
-                VPredict.at<short>(r,c) = VChannel.at<short>(r,c);
-            }
-            else{
-                short* residual = (((VChannel.at<short>(r,c-1))-(VChannel.at<short>(r-1,c-1)))/2);
-
-                residual = (VChannel.at<short>(r-1,c))+residual;
-
-                residual = (VChannel.at<short>(r,c))- residual;
-
-                VPredict.at<short>(r,c) = residual;
-            }
-        }
-    }
-
-    YChannel.convertTo(YChannel, CV_8UC1);
-    UChannel.convertTo(UChannel, CV_8UC1);
-    VChannel.convertTo(VChannel, CV_8UC1);
-
-    UPredict = UPredict.reshape(1, UVHeight / 2); // align the uneven rows right of the even ones
+    Mat VResidual = Mat::zeros(Size(UVHeight, UVWidth), CV_16SC1);
+    subtract(VChannel, VPredict, VResidual);
+  
+    UResidual = UResidual.reshape(1, UVHeight / 2); // align the uneven rows right of the even ones
     VPredict = VPredict.reshape(1, UVHeight / 2); // align the uneven rows right of the even ones
-
-    Mat YUVPredict;
-
+        
+/*
     vconcat(YPredict, UPredict, YUVPredict);
     vconcat(YUVPredict, VPredict, YUVPredict);
+*/
+    YUVPredict = YUVPredict.clone();
 
-
-
-        imshow("YUV 4:2:0", YUVPredict);
+ //       imshow("YUV 4:2:0", YUVPredict);
 
     waitKey();
 
