@@ -35,7 +35,7 @@ Na leitura do ficheiro binário utilizamos o metodo *file.read (memblock, size)*
 
 - [ ] Ex4_A - Implementa um programa simples para testar a classe Golomb.
 
-##### Parte B [^4][^8]
+##### Parte B [^4][^8][^9]
 
 - [ ] Ex1_B - Desenvolve um codec de audio preditivo, explorando as redundâncias de canal e de frequência, usando códigos de Golomb.
 
@@ -43,7 +43,7 @@ Na leitura do ficheiro binário utilizamos o metodo *file.read (memblock, size)*
 
 - [ ] Ex3_B - Inclui uma opção para codificador "lossy", baseado em quantificação residual.
 
-##### Parte C [^9]
+##### Parte C [^10]
 
 - [ ] Ex1_C - Desenvolve um codificador "lossless" baseado nos preditores lineares JPEG-LS ou 7 JPEG.
 
@@ -82,4 +82,6 @@ REFERÊNCIAS:
 
 [^8]: FLAC: https://xiph.org/flac/format.html
 
-[^9]: JPEG DCT, Discrete Cosine Transform (JPEG Pt2): https://www.youtube.com/watch?v=Q2aEzeMDHMA
+[^9]: Predicitve Coding (slides): https://web.stanford.edu/class/ee398a/handouts/lectures/06-Prediction.pdf
+
+[^10]: JPEG DCT, Discrete Cosine Transform (JPEG Pt2): https://www.youtube.com/watch?v=Q2aEzeMDHMA
