@@ -82,6 +82,6 @@ REFERÊNCIAS:
 
 [^8]: FLAC: https://xiph.org/flac/format.html
 
-[^9]: Predicitve Coding (slides): https://web.stanford.edu/class/ee398a/handouts/lectures/06-Prediction.pdf
+[^9]: Predicitve Coding (slide 06-Prediction.pdf): https://web.stanford.edu/class/ee398a/handouts/lectures/
 
 [^10]: JPEG DCT, Discrete Cosine Transform (JPEG Pt2): https://www.youtube.com/watch?v=Q2aEzeMDHMA
