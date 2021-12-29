@@ -3,7 +3,7 @@
 #include <string>
 #include <math.h>
 #include <sstream>
-#include "BitStreamV2.h"
+#include "BitStream.h"
 
 
 
@@ -16,7 +16,7 @@ int main (int argc, char* argv[])
 ///  argv[5]=valor de [-b size], para indicar o n.º de bits a ler e escrever
 
 
-        if (argc<=2 || argv[1]=="/?")	{	// indicação da sintaxe de commando
+    if (argc<=2 || argv[1]=="/?")	{	// indicação da sintaxe de commando
 		cout << "Usage: ./program_name ./original_file_name.wav ./copy_file_name.wav -r or -w [-b size] \n\n options:\n\t -b size\t Number of bits to read or write (all if not specified).\n" << endl; // \a toca um som de alerta (byte 0x07 in ASCII encoding)
 	}
 

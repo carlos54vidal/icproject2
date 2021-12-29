@@ -104,8 +104,8 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
 
 
 /// Method for reading a file sample by sample, character or text, with no limits.
-    double Read_Audio_file ()
-    {
+    double Read_Audio_file (){
+
             AudioFile<double> audioFile;
 
             audioFile.load(rfilename);
@@ -119,6 +119,7 @@ Write_tbits(uint8_t bit, tbits) para juntar o byte bit a bit, até ao limite de "
                 rbuffer = audioFile.samples[c][i];
                 }
             }
+            return rbuffer;
     }
 
     rbuffer_type Read_Text_file (){
@@ -277,7 +278,7 @@ It starts reading from the least significant bit towards the most significant bi
 
 
 /// Method for constructing the buffer bit by bit, starting from the most significant bit towards the least significant bit.
-    void Write(uint8_t bit)
+    uint8_t Write(uint8_t bit)
     {
         uint8_t wbuffer{};
         wbuffer = static_cast<uint8_t>(wbuffer);
@@ -289,7 +290,7 @@ It starts reading from the least significant bit towards the most significant bi
 
         if (nbits==0){
             nbits=buffer_size;
-            if (file_extension == ".txt") {
+            if (file_extension == ".txt" || file_extension == ".bin") {
                 Write_Text_file(wbuffer);
             }
             if (file_extension == ".wav") {
@@ -299,6 +300,7 @@ It starts reading from the least significant bit towards the most significant bi
                 Write_Image_file(wbuffer);
             }
         }
+        return wbuffer;
     }
 
 /** Method for writing the produced buffer to the new file with limited bits parameter. The minimum bit size established for I/O

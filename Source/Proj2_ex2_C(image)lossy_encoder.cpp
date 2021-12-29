@@ -20,7 +20,13 @@ Mat YUVResidual;
 string wfilename;
 
 
-void ImageEncode(string rfilename){
+
+void ImageEncode(string rfilename, int rq, int gq, int bq){
+
+    ///rq: for R color channel quantization
+    ///gq: for G color channel quantization
+    ///bq: for B color channel quantization
+    /// on opencv Mat containers, the channel are ordered BGR [0], [1], [2].
 
     std::filesystem::path p = rfilename, e; /* constructs the path that corresponds to the current file system or OS, from the character sequence
                                             stored on the rfilename attribute */
@@ -109,19 +115,22 @@ void ImageEncode(string rfilename){
         for (int c = 0; c < iWidth; c++){
             if (r==0){
                 residual = YChannel.at<uchar>(r,c);
+                residual = (trunc(residual / rq) * rq); ///color channel quantization
                 ofs.put(residual);
             }
             if (c==0) {
                 residual = YChannel.at<uchar>(r,c);
+                residual = (trunc(residual / rq) * rq); ///color channel quantization
                 ofs.put(residual);
             }
             else{
                 int ax, bx, cx, x;
-                ax = YChannel.at<uchar>(r, c - 1);
-                bx = YChannel.at<uchar>(r - 1, c);
-                cx = YChannel.at<uchar>(r - 1, c - 1);
-                x = YChannel.at<uchar>(r, c);
+                ax = (trunc(YChannel.at<uchar>(r, c - 1) / rq) * rq); ///w  color channel quantization
+                bx = (trunc(YChannel.at<uchar>(r - 1, c) / rq) * rq); ///w color channel quantization
+                cx = (trunc(YChannel.at<uchar>(r - 1, c - 1) / rq) * rq); ///w color channel quantization
+                x = (trunc(YChannel.at<uchar>(r, c) / rq) * rq); ///w color channel quantization
                 residual = x - (bx + ((ax - cx) / 2));
+                
                 ofs.put(residual);
             }
         }        
@@ -131,18 +140,20 @@ void ImageEncode(string rfilename){
         for (int c = 0; c < UVWidth; c++){
             if (r==0){
                 residual = UChannel.at<uchar>(r,c);
+                residual = (trunc(residual / gq) * gq);  ///color channel quantization
                 ofs.put(residual);
             }
             if (c==0) {
                 residual = UChannel.at<uchar>(r,c);
+                residual = (trunc(residual / gq) * gq);  ///color channel quantization
                 ofs.put(residual);
             }
             else{
                 int ax, bx, cx, x;
-                ax = UChannel.at<uchar>(r,c-1);
-                bx = UChannel.at<uchar>(r-1,c);
-                cx = UChannel.at<uchar>(r - 1, c - 1);
-                x = UChannel.at<uchar>(r, c);
+                ax = (trunc(UChannel.at<uchar>(r,c-1) / gq) * gq);  ///w  color channel quantization
+                bx = (trunc(UChannel.at<uchar>(r-1,c) / gq) * gq);  ///w  color channel quantization
+                cx = (trunc(UChannel.at<uchar>(r - 1, c - 1) / gq) * gq);  ///w  color channel quantization
+                x = (trunc(UChannel.at<uchar>(r, c) / gq) * gq);  ///w  color channel quantization
                 residual = x-(bx+((ax-cx)/2));
                 ofs.put(residual);
             }
@@ -153,18 +164,20 @@ void ImageEncode(string rfilename){
         for (int c = 0; c < UVWidth; c++){
             if (r==0){
                 residual = VChannel.at<uchar>(r,c);
+                residual = (trunc(residual / bq) * bq);  ///color channel quantization
                 ofs.put(residual);
             }
             if (c==0) {
                 residual = VChannel.at<uchar>(r,c);
+                residual = (trunc(residual / bq) * bq);  ///color channel quantization
                 ofs.put(residual);
             }
             else{
                 int ax, bx, cx, x;
-                ax = VChannel.at<uchar>(r,c-1);
-                bx = VChannel.at<uchar>(r-1,c);
-                cx = VChannel.at<uchar>(r - 1, c - 1);
-                x = VChannel.at<uchar>(r, c);
+                ax = (trunc(VChannel.at<uchar>(r,c-1) / bq) * bq);  ///w  color channel quantization
+                bx = (trunc(VChannel.at<uchar>(r-1,c) / bq) * bq);  ///w  color channel quantization
+                cx = (trunc(VChannel.at<uchar>(r - 1, c - 1) / bq) * bq);  ///w  color channel quantization
+                x = (trunc(VChannel.at<uchar>(r, c) / bq) * bq);  ///w  color channel quantization
                 residual = x-(bx+((ax-cx)/2));
                 ofs.put(residual);
             }
@@ -176,17 +189,17 @@ void ImageEncode(string rfilename){
 }
 
 
-int main(int argc, char* argv[]){
-
- 
+int main(int argc, char* argv[]) {
 
     if (argc <= 2 || argv[1] == "/?") {	// indicação da sintaxe de commando
-        cout << "Usage: ./program_name ./image_file_name.ppm \a" << endl; // \a toca um som de alerta (byte 0x07 in ASCII encoding)
-            }
+        cout << "Usage: ./program_name  ./image_file_name.ppm [R % of quality loss] [B % of quality loss] [G % of quality loss] \n\n e.g:\n\t ./Proj2_ex2_C(image)lossy_encoder.exe tulips.ppm 5 5 5 encodes the tulips.ppm\n\t\t image with 5% loss on the R channel as well as 5% on the B and G color channels.\n\t\t 0 % if not specified.\n" << endl; // \a toca um som de alerta (byte 0x07 in ASCII encoding)
+    }
 
-    ImageEncode(argv[1]);
+    int rq = stoi(argv[2]);
+    int gq = stoi(argv[3]);
+    int bq = stoi(argv[4]);
 
-
+    ImageEncode(argv[1], rq, gq, bq);
 
     return 0;
 }
