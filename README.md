@@ -5,7 +5,7 @@
 
 
           
-                   Raiz (executáveis, ficheiros de dados, relatório final e "readme")
+                   Raiz (executáveis, ficheiros de dados e "readme")
                      |
                      |
                      |_______ Sources (ficheiros de código)                     
