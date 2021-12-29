@@ -18,16 +18,14 @@ double side_residual;
 string filename;
 
 
-int main(int argc, char* argv[]){
+void AudioEncoder(string filename, int qu){
 
-
-
-    filename = argv[1];
 
     AudioFile<double> audioFile;
 
     audioFile.load(filename);
     double rbuffer{};
+    //            rbuffer = static_cast<double>(rbuffer);
     int channels = audioFile.getNumChannels();
     int numSamples = audioFile.getNumSamplesPerChannel();
 
@@ -44,9 +42,11 @@ int main(int argc, char* argv[]){
         for (int c = 0; c <= channels; c++) {
             if (c%2 != 0) {
                 left_sample = audioFile.samples[c][i];
+                left_sample = (trunc(left_sample / qu) * qu); ///channel quantization
             }
             else {
                 rigt_sample = audioFile.samples[c][i];
+                rigt_sample = (trunc(rigt_sample / qu) * qu); ///channel quantization
             }
 
             /**
@@ -60,8 +60,7 @@ int main(int argc, char* argv[]){
             mid_sample = (left_sample + rigt_sample) / 2;
             side_sample = left_sample - rigt_sample;
 
-
-            ///Simple polynomial predictor:
+             ///Simple polynomial predictor:
             // can be improved by using a circular buffer instead...
 
             if (i > 3) {
@@ -116,7 +115,6 @@ int main(int argc, char* argv[]){
                 side_residual = side_sample;
             }
 
-
   /// folding:
             if (mid_residual >= 0) {
                 mid_residual = (2 * mid_residual);
@@ -130,7 +128,7 @@ int main(int argc, char* argv[]){
                 else {
                 side_residual = (2 * mid_residual) - 1;
                 }
-/*To do:
+/**To do:
 FRAMING
 An audio frame is preceded by a frame header and trailed by a frame footer. The header starts with a sync code,
 and contains the minimum information necessary for a decoder to play the stream, like sample rate, bits per sample, etc.*/
@@ -138,14 +136,25 @@ and contains the minimum information necessary for a decoder to play the stream,
 
             Golomb gs;
 
-            gs.filename = argv[1];
+            gs.filename = filename;
             gs.G_encoder(mid_residual);
             gs.G_encoder(side_residual);
 
         }
     }
 
+}
 
-  return 0;
+int main(int argc, char* argv[]) {
+
+    if (argc <= 2 || argv[1] == "/?") {	/// indicação da sintaxe de commando
+        cout << "Usage: ./program_name  ./image_file_name.ppm [% of quality loss] \n\n e.g:\n\t ./Proj2_ex2_C(audio)lossy_encoder.exe audio.wav 5,  encodes the audio.wav\n\t\t audio with 5% loss.\n\t\t 0 % if not specified.\n" << endl; // \a toca um som de alerta (byte 0x07 in ASCII encoding)
+    }
+
+    int qu = stoi(argv[4]);
+
+    AudioEncoder(argv[1], qu);
+
+    return 0;
 }
 

@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <fstream>
 #include <string>
+#include "Golomb.h"
 #include <filesystem> /** It needs a compiler that supports the C++17 language standard, which is implemented e.g. on the g++ compiler from the version 8 onwards,
                         but it's recommended a g++ version release 9 or newer for full support. https://gcc.gnu.org/gcc-9/changes.html#cxx **/
 
@@ -21,7 +22,7 @@ string wfilename;
 
 
 
-void ImageEncode(string rfilename, int rq, int gq, int bq){
+void ImageEncoder(string rfilename, int rq, int gq, int bq){
 
     ///rq: for R color channel quantization
     ///gq: for G color channel quantization
@@ -32,7 +33,7 @@ void ImageEncode(string rfilename, int rq, int gq, int bq){
                                             stored on the rfilename attribute */
     file_extension = std::filesystem::path(p).extension().string();
     cout << file_extension << endl;
-	
+
     double minVal, maxVal;
     Point minLoc;
     Point maxLoc;
@@ -55,11 +56,11 @@ void ImageEncode(string rfilename, int rq, int gq, int bq){
 	Mat yuvcolor = Mat::zeros(Size(original.rows, original.cols), CV_8UC3);//creates a new matrix for the yuv color scheme with 3 channels
 
 	cvtColor(original, yuvcolor, COLOR_BGR2YUV); // converts RGB color values to YUV color and loads the values on the yuv matrix
-    
+
     Mat splitChannels[3];
 
     split(yuvcolor, splitChannels);
-   
+
    minMaxLoc(splitChannels[2], &minVal, &maxVal, &minLoc, &maxLoc);
    if (maxVal >= 256){
        using sample_type = int;
@@ -81,8 +82,8 @@ void ImageEncode(string rfilename, int rq, int gq, int bq){
     Mat YChannel = Mat::zeros(Size(iHeightRows, iWidth), CV_8UC1);
 
     UChannel = rd_splitChannels[1].clone() /*.reshape(1, UVHeight / 2)*/; // apply reshape if needed
-    VChannel = rd_splitChannels[0].clone() /*.reshape(1, UVHeight/2)*/; // apply reshape if needed
-    YChannel = splitChannels[2].clone();
+    VChannel = rd_splitChannels[2].clone() /*.reshape(1, UVHeight/2)*/; // apply reshape if needed
+    YChannel = splitChannels[0].clone();
 
     std::filesystem::path p1 = rfilename, we = "dat";
     p1.replace_extension(we);
@@ -103,25 +104,30 @@ void ImageEncode(string rfilename, int rq, int gq, int bq){
             ofs.put(sample);
         }
     }
- 
+
+    ofs.close();
+
+
     cout << "Width = " << Width << "Hight = " << Hight << endl;
-     
+
 // JPEG mode 6 predictor formula: X = B + ((A − C)/2), onde: X=(r,c); A=(r,c-1); B=(r-1,c) e C=(r-1,c-1)
 //A=YChannel.at<uint8_t>(r,c-1), B=YChannel.at<uint8_t>(r-1,c) e C=YChannel.at<uint8_t>(r-1,c-1)
 
     uchar residual;
+    Golomb gs;
+    gs.filename = rfilename;
 
     for (int r = 0; r < iHeightRows; r++){
         for (int c = 0; c < iWidth; c++){
             if (r==0){
                 residual = YChannel.at<uchar>(r,c);
                 residual = (trunc(residual / rq) * rq); ///color channel quantization
-                ofs.put(residual);
+                gs.G_encoder(residual);
             }
             if (c==0) {
                 residual = YChannel.at<uchar>(r,c);
                 residual = (trunc(residual / rq) * rq); ///color channel quantization
-                ofs.put(residual);
+                gs.G_encoder(residual);
             }
             else{
                 int ax, bx, cx, x;
@@ -130,23 +136,22 @@ void ImageEncode(string rfilename, int rq, int gq, int bq){
                 cx = (trunc(YChannel.at<uchar>(r - 1, c - 1) / rq) * rq); ///w color channel quantization
                 x = (trunc(YChannel.at<uchar>(r, c) / rq) * rq); ///w color channel quantization
                 residual = x - (bx + ((ax - cx) / 2));
-                
-                ofs.put(residual);
+                gs.G_encoder(residual);
             }
-        }        
+        }
     }
-        
+
     for (int r = 0; r < UVHeightRows; r++){
         for (int c = 0; c < UVWidth; c++){
             if (r==0){
                 residual = UChannel.at<uchar>(r,c);
                 residual = (trunc(residual / gq) * gq);  ///color channel quantization
-                ofs.put(residual);
+                gs.G_encoder(residual);
             }
             if (c==0) {
                 residual = UChannel.at<uchar>(r,c);
                 residual = (trunc(residual / gq) * gq);  ///color channel quantization
-                ofs.put(residual);
+                gs.G_encoder(residual);
             }
             else{
                 int ax, bx, cx, x;
@@ -155,7 +160,7 @@ void ImageEncode(string rfilename, int rq, int gq, int bq){
                 cx = (trunc(UChannel.at<uchar>(r - 1, c - 1) / gq) * gq);  ///w  color channel quantization
                 x = (trunc(UChannel.at<uchar>(r, c) / gq) * gq);  ///w  color channel quantization
                 residual = x-(bx+((ax-cx)/2));
-                ofs.put(residual);
+                gs.G_encoder(residual);
             }
          }
     }
@@ -165,12 +170,12 @@ void ImageEncode(string rfilename, int rq, int gq, int bq){
             if (r==0){
                 residual = VChannel.at<uchar>(r,c);
                 residual = (trunc(residual / bq) * bq);  ///color channel quantization
-                ofs.put(residual);
+                gs.G_encoder(residual);
             }
             if (c==0) {
                 residual = VChannel.at<uchar>(r,c);
                 residual = (trunc(residual / bq) * bq);  ///color channel quantization
-                ofs.put(residual);
+                gs.G_encoder(residual);
             }
             else{
                 int ax, bx, cx, x;
@@ -179,12 +184,10 @@ void ImageEncode(string rfilename, int rq, int gq, int bq){
                 cx = (trunc(VChannel.at<uchar>(r - 1, c - 1) / bq) * bq);  ///w  color channel quantization
                 x = (trunc(VChannel.at<uchar>(r, c) / bq) * bq);  ///w  color channel quantization
                 residual = x-(bx+((ax-cx)/2));
-                ofs.put(residual);
+                gs.G_encoder(residual);
             }
          }
     }
-
-    ofs.close();
 
 }
 
@@ -199,7 +202,7 @@ int main(int argc, char* argv[]) {
     int gq = stoi(argv[3]);
     int bq = stoi(argv[4]);
 
-    ImageEncode(argv[1], rq, gq, bq);
+    ImageEncoder(argv[1], rq, gq, bq);
 
     return 0;
 }
